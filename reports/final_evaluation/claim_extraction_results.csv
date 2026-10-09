@@ -1,0 +1,16 @@
+test_id,text_preview,expected_claim_count,extracted_claim_count,expected_checkable,extracted_checkable,checkability_match,has_quote,description
+claim_001,The Federal Reserve raised the benchmark federal funds rate ...,1,1,True,True,True,False,Single atomic numeric factual proposition.
+claim_002,Unemployment fell to 3.8 percent in March and total nonfarm ...,2,1,True,True,True,False,Compound sentence with two distinct numerical factual propositions.
+claim_003,Chocolate gelato with salted caramel is the most delicious d...,1,1,False,False,True,False,Pure subjective taste preference / non-checkable opinion.
+claim_004,Why do municipal governments spend taxpayer funds on modern ...,0,0,False,False,True,False,Rhetorical question with zero checkable factual assertions.
+claim_005,"Senator Miller stated: ""The proposed highway widening will r...",1,1,True,True,True,True,Direct quoted statement with clear political attribution and quantitative claim.
+claim_006,This newly released science fiction film is an unmitigated d...,1,1,False,False,True,False,Sensational aesthetic critique / non-checkable opinion.
+claim_007,California's Central Valley produces over 80 percent of the ...,1,1,True,True,True,False,Agricultural percentage claim with geographical attribution.
+claim_008,The Apollo 11 lunar module Eagle touched down on the Sea of ...,1,1,True,True,True,False,Specific historical event with precise date and location.
+claim_009,Universal public healthcare is a fundamental human right tha...,1,1,False,False,True,False,Ethical and moral policy assertion / non-verifiable value judgment.
+claim_010,Drinking three cups of green tea daily completely prevents a...,1,1,True,True,True,False,"Empirical medical / health proposition (false/unsupported, but checkable)."
+claim_011,The main branch of the public library on Oak Street will be ...,1,1,True,True,True,False,Local civic logistical notice with calendar boundaries.
+claim_012,Artificial general intelligence will surpass all human intel...,1,1,False,False,True,False,Unverifiable speculative future prediction.
+claim_013,"Physicist Albert Einstein wrote in 1915: ""Gravitation is not...",1,1,True,True,True,True,Historical quotation attribution with speaker and year.
+claim_014,"TechCorp reported third-quarter revenue of $18.4 billion, ex...",1,1,True,True,True,False,Corporate quarterly earnings assertion with financial metrics.
+claim_015,"The incumbent governor has ruined the state budget, while st...",2,1,True,True,True,False,Mixed statement containing subjective opinion and checkable budget figure.

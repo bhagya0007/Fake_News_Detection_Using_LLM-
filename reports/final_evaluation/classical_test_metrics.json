@@ -1,0 +1,65 @@
+{
+  "benchmark_name": "Frozen Classical Model Test Evaluation (Track C)",
+  "source_file": "models/classical_test_predictions.csv",
+  "total_test_samples": 1283,
+  "test_accuracy": 0.4373,
+  "test_macro_f1": 0.4345,
+  "per_class_metrics": {
+    "likely_fake": {
+      "precision": 0.388,
+      "recall": 0.4357,
+      "f1": 0.4105,
+      "support": 342
+    },
+    "likely_reliable": {
+      "precision": 0.4735,
+      "recall": 0.5043,
+      "f1": 0.4884,
+      "support": 460
+    },
+    "misleading": {
+      "precision": 0.4401,
+      "recall": 0.3742,
+      "f1": 0.4045,
+      "support": 481
+    }
+  },
+  "top_confusion_pairs": [
+    {
+      "true_label": "misleading",
+      "predicted_label": "likely_reliable",
+      "count": 169,
+      "percentage_of_errors": 23.41
+    },
+    {
+      "true_label": "misleading",
+      "predicted_label": "likely_fake",
+      "count": 132,
+      "percentage_of_errors": 18.28
+    },
+    {
+      "true_label": "likely_reliable",
+      "predicted_label": "misleading",
+      "count": 125,
+      "percentage_of_errors": 17.31
+    },
+    {
+      "true_label": "likely_fake",
+      "predicted_label": "misleading",
+      "count": 104,
+      "percentage_of_errors": 14.4
+    },
+    {
+      "true_label": "likely_reliable",
+      "predicted_label": "likely_fake",
+      "count": 103,
+      "percentage_of_errors": 14.27
+    },
+    {
+      "true_label": "likely_fake",
+      "predicted_label": "likely_reliable",
+      "count": 89,
+      "percentage_of_errors": 12.33
+    }
+  ]
+}

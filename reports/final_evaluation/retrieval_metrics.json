@@ -1,0 +1,10 @@
+{
+  "total_queries": 16,
+  "in_domain_queries": 13,
+  "out_of_domain_queries": 3,
+  "recall_at_1": 1.0,
+  "recall_at_3": 1.0,
+  "mean_top1_similarity_in_domain": 0.8101,
+  "no_match_rejection_rate": 1.0,
+  "false_retrieval_rate": 0.0
+}

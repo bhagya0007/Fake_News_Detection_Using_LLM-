@@ -1,0 +1,137 @@
+[
+  {
+    "test_id": "claim_001",
+    "text": "The Federal Reserve raised the benchmark federal funds rate by 25 basis points at its July meeting.",
+    "expected_claim_count": 1,
+    "expected_checkable": true,
+    "claim_type": "numeric",
+    "has_quote": false,
+    "description": "Single atomic numeric factual proposition."
+  },
+  {
+    "test_id": "claim_002",
+    "text": "Unemployment fell to 3.8 percent in March and total nonfarm payrolls increased by 303,000 jobs.",
+    "expected_claim_count": 2,
+    "expected_checkable": true,
+    "claim_type": "numeric",
+    "has_quote": false,
+    "description": "Compound sentence with two distinct numerical factual propositions."
+  },
+  {
+    "test_id": "claim_003",
+    "text": "Chocolate gelato with salted caramel is the most delicious dessert ever invented.",
+    "expected_claim_count": 1,
+    "expected_checkable": false,
+    "claim_type": "other",
+    "has_quote": false,
+    "description": "Pure subjective taste preference / non-checkable opinion."
+  },
+  {
+    "test_id": "claim_004",
+    "text": "Why do municipal governments spend taxpayer funds on modern decorative streetlights?",
+    "expected_claim_count": 0,
+    "expected_checkable": false,
+    "claim_type": "other",
+    "has_quote": false,
+    "description": "Rhetorical question with zero checkable factual assertions."
+  },
+  {
+    "test_id": "claim_005",
+    "text": "Senator Miller stated: \"The proposed highway widening will reduce morning traffic congestion by 35% across the northern corridor.\"",
+    "expected_claim_count": 1,
+    "expected_checkable": true,
+    "claim_type": "attribution",
+    "has_quote": true,
+    "description": "Direct quoted statement with clear political attribution and quantitative claim."
+  },
+  {
+    "test_id": "claim_006",
+    "text": "This newly released science fiction film is an unmitigated disaster that ruins cinema forever!",
+    "expected_claim_count": 1,
+    "expected_checkable": false,
+    "claim_type": "other",
+    "has_quote": false,
+    "description": "Sensational aesthetic critique / non-checkable opinion."
+  },
+  {
+    "test_id": "claim_007",
+    "text": "California's Central Valley produces over 80 percent of the world's commercial almond crop.",
+    "expected_claim_count": 1,
+    "expected_checkable": true,
+    "claim_type": "numeric",
+    "has_quote": false,
+    "description": "Agricultural percentage claim with geographical attribution."
+  },
+  {
+    "test_id": "claim_008",
+    "text": "The Apollo 11 lunar module Eagle touched down on the Sea of Tranquility on July 20, 1969.",
+    "expected_claim_count": 1,
+    "expected_checkable": true,
+    "claim_type": "event",
+    "has_quote": false,
+    "description": "Specific historical event with precise date and location."
+  },
+  {
+    "test_id": "claim_009",
+    "text": "Universal public healthcare is a fundamental human right that all civilized nations must guarantee.",
+    "expected_claim_count": 1,
+    "expected_checkable": false,
+    "claim_type": "other",
+    "has_quote": false,
+    "description": "Ethical and moral policy assertion / non-verifiable value judgment."
+  },
+  {
+    "test_id": "claim_010",
+    "text": "Drinking three cups of green tea daily completely prevents all known respiratory viruses.",
+    "expected_claim_count": 1,
+    "expected_checkable": true,
+    "claim_type": "causal",
+    "has_quote": false,
+    "description": "Empirical medical / health proposition (false/unsupported, but checkable)."
+  },
+  {
+    "test_id": "claim_011",
+    "text": "The main branch of the public library on Oak Street will be closed for HVAC repairs from October 10 to October 15.",
+    "expected_claim_count": 1,
+    "expected_checkable": true,
+    "claim_type": "event",
+    "has_quote": false,
+    "description": "Local civic logistical notice with calendar boundaries."
+  },
+  {
+    "test_id": "claim_012",
+    "text": "Artificial general intelligence will surpass all human intellectual capability before the end of 2028.",
+    "expected_claim_count": 1,
+    "expected_checkable": false,
+    "claim_type": "other",
+    "has_quote": false,
+    "description": "Unverifiable speculative future prediction."
+  },
+  {
+    "test_id": "claim_013",
+    "text": "Physicist Albert Einstein wrote in 1915: \"Gravitation is not a force, but a curvature of spacetime caused by mass.\"",
+    "expected_claim_count": 1,
+    "expected_checkable": true,
+    "claim_type": "attribution",
+    "has_quote": true,
+    "description": "Historical quotation attribution with speaker and year."
+  },
+  {
+    "test_id": "claim_014",
+    "text": "TechCorp reported third-quarter revenue of $18.4 billion, exceeding Wall Street consensus estimates by 4.2 percent.",
+    "expected_claim_count": 1,
+    "expected_checkable": true,
+    "claim_type": "numeric",
+    "has_quote": false,
+    "description": "Corporate quarterly earnings assertion with financial metrics."
+  },
+  {
+    "test_id": "claim_015",
+    "text": "The incumbent governor has ruined the state budget, while state highway spending actually grew by $450 million in 2023.",
+    "expected_claim_count": 2,
+    "expected_checkable": true,
+    "claim_type": "numeric",
+    "has_quote": false,
+    "description": "Mixed statement containing subjective opinion and checkable budget figure."
+  }
+]

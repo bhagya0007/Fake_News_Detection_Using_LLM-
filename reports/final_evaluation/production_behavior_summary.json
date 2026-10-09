@@ -1,0 +1,94 @@
+{
+  "benchmark_name": "Production-Mode Abstention Evaluation (Track B)",
+  "total_statements": 20,
+  "abstention_count": 20,
+  "abstention_rate": 1.0,
+  "unverifiable_rate": 1.0,
+  "mean_support_score": 0.0,
+  "llm_short_circuit_rate": 1.0,
+  "classical_ml_distribution_without_evidence": {
+    "likely_fake": 7,
+    "misleading": 6,
+    "likely_reliable": 7
+  },
+  "mean_red_flag_count": 0.5,
+  "max_red_flag_count": 3,
+  "domain_breakdown": {
+    "politics": {
+      "total": 1,
+      "abstained": 1
+    },
+    "economy": {
+      "total": 1,
+      "abstained": 1
+    },
+    "health_medicine": {
+      "total": 1,
+      "abstained": 1
+    },
+    "science_climate": {
+      "total": 1,
+      "abstained": 1
+    },
+    "technology_ai": {
+      "total": 1,
+      "abstained": 1
+    },
+    "sports": {
+      "total": 1,
+      "abstained": 1
+    },
+    "astronomy": {
+      "total": 1,
+      "abstained": 1
+    },
+    "transportation": {
+      "total": 1,
+      "abstained": 1
+    },
+    "international": {
+      "total": 1,
+      "abstained": 1
+    },
+    "entertainment": {
+      "total": 1,
+      "abstained": 1
+    },
+    "sensational_hoax": {
+      "total": 1,
+      "abstained": 1
+    },
+    "education": {
+      "total": 1,
+      "abstained": 1
+    },
+    "energy": {
+      "total": 1,
+      "abstained": 1
+    },
+    "agriculture": {
+      "total": 1,
+      "abstained": 1
+    },
+    "opinion": {
+      "total": 2,
+      "abstained": 2
+    },
+    "philosophy": {
+      "total": 1,
+      "abstained": 1
+    },
+    "business": {
+      "total": 1,
+      "abstained": 1
+    },
+    "archaeology": {
+      "total": 1,
+      "abstained": 1
+    },
+    "telecom": {
+      "total": 1,
+      "abstained": 1
+    }
+  }
+}

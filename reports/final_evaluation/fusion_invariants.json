@@ -1,0 +1,67 @@
+{
+  "all_invariants_passed": true,
+  "total_invariants": 10,
+  "passed_invariants": 10,
+  "invariants": [
+    {
+      "id": "INV-01",
+      "name": "No Checkable Claims Abstention",
+      "description": "Non-checkable statements (opinion, rhetorical questions) must strictly abstain with score 0.0.",
+      "passed": true
+    },
+    {
+      "id": "INV-02",
+      "name": "No Usable Evidence Abstention",
+      "description": "Factual claims with empty or ungrounded evidence must strictly abstain with score 0.0.",
+      "passed": true
+    },
+    {
+      "id": "INV-03",
+      "name": "Synthetic Fixture Quarantine in Production",
+      "description": "Synthetic demo fixtures must be rejected when allow_synthetic_evidence=False, forcing abstention.",
+      "passed": true
+    },
+    {
+      "id": "INV-04",
+      "name": "Stylometric Red Flags Non-Conviction Gate",
+      "description": "Red flags reflect writing style only and cannot independently trigger fake/misleading verdicts.",
+      "passed": true
+    },
+    {
+      "id": "INV-05",
+      "name": "Classical ML Inability to Bypass Evidence Gate",
+      "description": "Even 98% ML confidence cannot produce an ungrounded verdict when factual evidence is absent.",
+      "passed": true
+    },
+    {
+      "id": "INV-06",
+      "name": "LLM Reasoner Failure Graceful Fallback",
+      "description": "If evidence exists but the LLM reasoner is unavailable/timed out, the system must safely abstain.",
+      "passed": true
+    },
+    {
+      "id": "INV-07",
+      "name": "LLM Unverifiable Assessment Honor Guard",
+      "description": "When the LLM concludes unverifiable, fusion must strictly abstain with score 0.0.",
+      "passed": true
+    },
+    {
+      "id": "INV-08",
+      "name": "Evidence Precedence Over Contrary ML (Reliable)",
+      "description": "Verified supporting evidence overrides contrary statistical ML predictions.",
+      "passed": true
+    },
+    {
+      "id": "INV-09",
+      "name": "Evidence Precedence Over Contrary ML (Fake)",
+      "description": "Verified contradicting evidence overrides contrary statistical ML predictions.",
+      "passed": true
+    },
+    {
+      "id": "INV-10",
+      "name": "Strict Abstention Score Heuristic Equivalence",
+      "description": "System abstention strictly implies support_score == 0.0 with zero exceptions.",
+      "passed": true
+    }
+  ]
+}

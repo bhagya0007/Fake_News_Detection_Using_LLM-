@@ -1,0 +1,5 @@
+,likely_reliable,likely_fake,misleading,unverifiable
+likely_reliable,11,0,0,0
+likely_fake,0,11,0,0
+misleading,0,0,11,0
+unverifiable,0,0,0,11

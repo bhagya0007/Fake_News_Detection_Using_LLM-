@@ -1,0 +1,44 @@
+# Virtual Environment
+.venv/
+env/
+venv/
+ENV/
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Environment and secrets
+.env
+.env.local
+*.env
+
+# IDE and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Data and Artifacts
+data/raw/*
+!data/raw/.gitkeep
+
+# Models
+models/*
+!models/.gitkeep
+
+# Application database files
+data/app/*.db
+data/app/*.db-shm
+data/app/*.db-wal
+!data/app/.gitkeep

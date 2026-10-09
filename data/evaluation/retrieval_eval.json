@@ -1,0 +1,156 @@
+[
+  {
+    "query_id": "ret_001",
+    "query": "Acme Corp manufacturing facility in Texas clean energy",
+    "expected_top1_id": "synth_001",
+    "relevant_ids": [
+      "synth_001"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme Texas factory"
+  },
+  {
+    "query_id": "ret_002",
+    "query": "Where is Acme Corp building its new clean energy production plant?",
+    "expected_top1_id": "synth_001",
+    "relevant_ids": [
+      "synth_001"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme Texas factory"
+  },
+  {
+    "query_id": "ret_003",
+    "query": "Acme Corp construction in Texas manufacturing facility announcement",
+    "expected_top1_id": "synth_001",
+    "relevant_ids": [
+      "synth_001"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme Texas factory"
+  },
+  {
+    "query_id": "ret_004",
+    "query": "How many workers is Acme Corp planning to recruit and hire over two years?",
+    "expected_top1_id": "synth_002",
+    "relevant_ids": [
+      "synth_002"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme hiring"
+  },
+  {
+    "query_id": "ret_005",
+    "query": "Acme Corp hiring 3,000 employees engineering assembly lines recruitment",
+    "expected_top1_id": "synth_002",
+    "relevant_ids": [
+      "synth_002"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme hiring"
+  },
+  {
+    "query_id": "ret_006",
+    "query": "Recruitment of 3,000 engineering workers by Acme Corp",
+    "expected_top1_id": "synth_002",
+    "relevant_ids": [
+      "synth_002"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme hiring"
+  },
+  {
+    "query_id": "ret_007",
+    "query": "Acme Corp quarterly production report Q1 2024 component output",
+    "expected_top1_id": "synth_003",
+    "relevant_ids": [
+      "synth_003"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme Q1 output"
+  },
+  {
+    "query_id": "ret_008",
+    "query": "How many components did Acme Corp manufacture in Q1 according to industrial index?",
+    "expected_top1_id": "synth_003",
+    "relevant_ids": [
+      "synth_003"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme Q1 output"
+  },
+  {
+    "query_id": "ret_009",
+    "query": "Acme Corp chief executive officer resignation board confirmation",
+    "expected_top1_id": "synth_004",
+    "relevant_ids": [
+      "synth_004"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme CEO rumors"
+  },
+  {
+    "query_id": "ret_010",
+    "query": "Did the CEO of Acme Corp resign from his leadership position?",
+    "expected_top1_id": "synth_004",
+    "relevant_ids": [
+      "synth_004"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme CEO rumors"
+  },
+  {
+    "query_id": "ret_011",
+    "query": "Acme Corp board statement regarding chief executive rumors",
+    "expected_top1_id": "synth_004",
+    "relevant_ids": [
+      "synth_004"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "Acme CEO rumors"
+  },
+  {
+    "query_id": "ret_012",
+    "query": "SolarTech solid-state battery prototype energy density testing Wh/kg",
+    "expected_top1_id": "synth_005",
+    "relevant_ids": [
+      "synth_005"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "SolarTech battery"
+  },
+  {
+    "query_id": "ret_013",
+    "query": "Laboratory evaluation of 450 Wh/kg solid-state battery SolarTech",
+    "expected_top1_id": "synth_005",
+    "relevant_ids": [
+      "synth_005"
+    ],
+    "is_out_of_domain": false,
+    "target_topic": "SolarTech battery"
+  },
+  {
+    "query_id": "ret_014",
+    "query": "The Great Pyramid of Giza was constructed under Pharaoh Khufu during the Fourth Dynasty.",
+    "expected_top1_id": null,
+    "relevant_ids": [],
+    "is_out_of_domain": true,
+    "target_topic": "Ancient Egypt"
+  },
+  {
+    "query_id": "ret_015",
+    "query": "Bitcoin cryptocurrency proof of work SHA-256 block mining algorithm difficulty adjustment",
+    "expected_top1_id": null,
+    "relevant_ids": [],
+    "is_out_of_domain": true,
+    "target_topic": "Cryptocurrency"
+  },
+  {
+    "query_id": "ret_016",
+    "query": "Clinical trial results for pediatric antibiotic treatments in sub-Saharan Africa",
+    "expected_top1_id": null,
+    "relevant_ids": [],
+    "is_out_of_domain": true,
+    "target_topic": "Medical clinical trial"
+  }
+]

@@ -1,0 +1,26 @@
+# Core ML & Data Processing
+pandas==3.0.6
+numpy==2.5.3
+scikit-learn==1.9.1
+joblib==1.6.0
+
+# Data Validation & Contracts
+pydantic==2.13.5
+
+# Configuration & Environment
+python-dotenv==1.2.3
+
+# LLM Providers & SDKs
+google-genai==2.25.0
+
+# Testing
+pytest==9.1.1
+
+# Web API & Server (Step 17)
+fastapi==0.142.2
+uvicorn==0.54.0
+httpx==0.28.1
+
+# Frontend Application (Step 18)
+streamlit==1.65.0
+

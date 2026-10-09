@@ -1,0 +1,17 @@
+query_id,query,expected_top1,retrieved_top1,hit_at_1,hit_at_3,top1_similarity,is_out_of_domain,correctly_rejected
+ret_001,Acme Corp manufacturing facility in Texas clean energy,synth_001,synth_001,True,True,0.8428,False,N/A
+ret_002,Where is Acme Corp building its new clean energy production plant?,synth_001,synth_001,True,True,0.7452,False,N/A
+ret_003,Acme Corp construction in Texas manufacturing facility announcement,synth_001,synth_001,True,True,0.8453,False,N/A
+ret_004,How many workers is Acme Corp planning to recruit and hire over two years?,synth_002,synth_002,True,True,0.8432,False,N/A
+ret_005,"Acme Corp hiring 3,000 employees engineering assembly lines recruitment",synth_002,synth_002,True,True,0.8612,False,N/A
+ret_006,"Recruitment of 3,000 engineering workers by Acme Corp",synth_002,synth_002,True,True,0.8488,False,N/A
+ret_007,Acme Corp quarterly production report Q1 2024 component output,synth_003,synth_003,True,True,0.744,False,N/A
+ret_008,How many components did Acme Corp manufacture in Q1 according to industrial index?,synth_003,synth_003,True,True,0.8224,False,N/A
+ret_009,Acme Corp chief executive officer resignation board confirmation,synth_004,synth_004,True,True,0.8176,False,N/A
+ret_010,Did the CEO of Acme Corp resign from his leadership position?,synth_004,synth_004,True,True,0.7894,False,N/A
+ret_011,Acme Corp board statement regarding chief executive rumors,synth_004,synth_004,True,True,0.623,False,N/A
+ret_012,SolarTech solid-state battery prototype energy density testing Wh/kg,synth_005,synth_005,True,True,0.88,False,N/A
+ret_013,Laboratory evaluation of 450 Wh/kg solid-state battery SolarTech,synth_005,synth_005,True,True,0.8681,False,N/A
+ret_014,The Great Pyramid of Giza was constructed under Pharaoh Khufu during the Fourth Dynasty.,NONE (OOD),NONE,False,False,0.0,True,True
+ret_015,Bitcoin cryptocurrency proof of work SHA-256 block mining algorithm difficulty adjustment,NONE (OOD),NONE,False,False,0.0,True,True
+ret_016,Clinical trial results for pediatric antibiotic treatments in sub-Saharan Africa,NONE (OOD),NONE,False,False,0.0,True,True

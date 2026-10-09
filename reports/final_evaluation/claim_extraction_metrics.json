@@ -1,0 +1,7 @@
+{
+  "total_cases": 15,
+  "checkability_accuracy": 1.0,
+  "quote_attribution_accuracy": 1.0,
+  "opinion_rejection_rate": 1.0,
+  "total_opinion_cases": 5
+}
