@@ -7,11 +7,11 @@ from typing import Optional
 
 from backend.app.ai.exceptions import LLMConfigurationError
 from backend.app.ai.provider_base import BaseLLMProvider
-from backend.app.ai.providers.gemini_provider import GeminiProvider
+from backend.app.ai.providers.groq_provider import GroqProvider
 from backend.app.ai.providers.mock_provider import MockLLMProvider
 from backend.app.config import LLMConfig
 
-SUPPORTED_PROVIDERS: tuple[str, ...] = ("mock", "gemini")
+SUPPORTED_PROVIDERS: tuple[str, ...] = ("mock", "groq")
 POTENTIAL_LIVE_PROVIDERS: tuple[str, ...] = ("openai", "anthropic")
 
 
@@ -41,21 +41,24 @@ def get_provider(config: Optional[LLMConfig] = None) -> BaseLLMProvider:
         model_name = config.model.strip() if config.model and config.model.strip() else "mock-model-v1"
         return MockLLMProvider(model_name=model_name)
 
-    if provider_name == "gemini":
+    if provider_name == "groq":
         if not config.api_key or not config.api_key.strip():
             raise LLMConfigurationError(
-                "Missing API key for provider 'gemini'. Set LLM_API_KEY in your environment."
+                "Missing API key for provider 'groq'. Set GROQ_API_KEY in your environment."
             )
         if not config.model or not config.model.strip():
             raise LLMConfigurationError(
-                "Missing model for provider 'gemini'. Set LLM_MODEL in your environment."
+                "Missing model for provider 'groq'. Set GROQ_MODEL in your environment."
             )
-        return GeminiProvider(
+        return GroqProvider(
             api_key=config.api_key,
             model_name=config.model,
             timeout_seconds=config.timeout_seconds,
             temperature=config.temperature,
         )
+
+    if provider_name == "gemini":
+        raise LLMConfigurationError("V2 runtime is configured for Groq-only operation.")
 
     if provider_name in POTENTIAL_LIVE_PROVIDERS:
         if not config.api_key or not config.api_key.strip():

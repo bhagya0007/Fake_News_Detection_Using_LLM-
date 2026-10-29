@@ -1,0 +1,79 @@
+{
+  "manifest_timestamp": "2026-10-18T16:17:30+05:30",
+  "project_id": "P_105",
+  "branch": "v2-groq",
+  "artifacts": {
+    "frozen_v1_baseline_model": {
+      "path": "models/classical_best_validation.joblib",
+      "sha256": "d4c3636277761f5399166ee41c0eec57cafe7b9216bacfc18d81f26fea415c92",
+      "size_bytes": 3239700,
+      "description": "Historical frozen V1 TF-IDF + Logistic Regression baseline pipeline."
+    },
+    "v2_selected_classifier_model": {
+      "path": "models/v2/tfidf_logreg/model.joblib",
+      "sha256": "55923f2cd7b47cea54f7548f11b88bbd8010af7ab7db050749d8e679172494d5",
+      "size_bytes": 1589236,
+      "description": "Formally selected V2 TF-IDF + Logistic Regression model (pre-declared CV Macro F1: 0.4786)."
+    },
+    "v2_challenger_classifier_model": {
+      "path": "models/v2/minilm_logreg/model.joblib",
+      "sha256": "7e2410b9ec07a026e9a0995e2a86260a0e8bc6aac29b6cd7546c66d9ed34f216",
+      "size_bytes": 5507,
+      "description": "Secondary dense representation challenger using frozen all-MiniLM-L6-v2 embeddings."
+    },
+    "classifier_training_pool": {
+      "path": "data/v2_processed/classifier_train_pool.jsonl",
+      "sha256": "34b010970e4c07daebde07d367ee61873ac3f8b5d929a9ae70583d5d814da84a",
+      "size_bytes": 11066690,
+      "description": "Harmonized 3-class training pool (11,926 claims from LIAR train + AVeriTeC train; 0 unverifiable)."
+    },
+    "liar_raw_train": {
+      "path": "data/raw/train.tsv",
+      "sha256": "23ef8cb7ff57b25c941100d0744039cebc595d65a67ea190f72b330a658d8c36",
+      "size_bytes": 2408165,
+      "description": "Original raw LIAR train TSV (10,269 claims)."
+    },
+    "liar_raw_valid": {
+      "path": "data/raw/valid.tsv",
+      "sha256": "8dd3d7ed1a11e78ed7df090c9eddb0f91147f895850c78d49dd7b4e88fd09a16",
+      "size_bytes": 301556,
+      "description": "Original raw LIAR validation TSV (1,284 claims)."
+    },
+    "liar_raw_test_frozen": {
+      "path": "data/raw/test.tsv",
+      "sha256": "ee41e2c741e0019216952625145af8c4aa8c8d3057ec68284b134267bb845e6f",
+      "size_bytes": 301118,
+      "description": "Official protected LIAR benchmark test split (1,283 claims)."
+    },
+    "averitec_dev_frozen": {
+      "path": "data/v2_raw/averitec/dev.json",
+      "sha256": "499793726b4a5406780928a3d9dedc48d6dd53de778f22437d129cacdb08e300",
+      "size_bytes": 1785475,
+      "description": "Protected AVeriTeC dev benchmark split (500 claims; 465 3-class applicable + 35 unverifiable)."
+    },
+    "v2_model_registry": {
+      "path": "models/v2/model_registry.json",
+      "sha256": "02463dd1de8b702d175fd14fd067d87379f3493bb96607b4381d637e6af95dfa",
+      "size_bytes": 3890,
+      "description": "Version 2 central model registry tracking cross-validation scores, hashes, and selection audit."
+    },
+    "stance_reasoning_prompt": {
+      "path": "backend/app/ai/prompts/stance_reasoning_v1.txt",
+      "sha256": "de1d5b68a84c7603bb5e4eb77bcc90c32854bef9504dd00e6cfbe084409b76e7",
+      "size_bytes": 4863,
+      "description": "System prompt for Groq claim-evidence stance reasoning."
+    },
+    "core_config": {
+      "path": "backend/app/config.py",
+      "sha256": "47204e2cbbb91a451c88fe71c8cfdd0e3916c2ea37ac1c96298305fb133dee57",
+      "size_bytes": 6896,
+      "description": "Application configuration and path definitions."
+    },
+    "core_schemas": {
+      "path": "backend/app/schemas.py",
+      "sha256": "2223a2063cd6a8931abf4776bf629ee3ce46c1b0f125802677423786e771c9f5",
+      "size_bytes": 36494,
+      "description": "Pydantic validated data contracts and schemas."
+    }
+  }
+}

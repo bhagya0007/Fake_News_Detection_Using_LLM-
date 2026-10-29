@@ -15,6 +15,7 @@ from backend.app.ai.llm_client import LLMClient
 from backend.app.ai.provider_base import BaseLLMProvider, LLMProvider
 from backend.app.ai.provider_factory import get_provider
 from backend.app.ai.providers.gemini_provider import GeminiProvider
+from backend.app.ai.providers.groq_provider import GroqProvider
 from backend.app.ai.providers.mock_provider import MockLLMProvider
 
 __all__ = [
@@ -22,6 +23,7 @@ __all__ = [
     "LLMProvider",
     "BaseLLMProvider",
     "GeminiProvider",
+    "GroqProvider",
     "MockLLMProvider",
     "get_provider",
     "LLMBaseError",

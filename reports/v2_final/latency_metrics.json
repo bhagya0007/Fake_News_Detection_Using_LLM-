@@ -1,0 +1,95 @@
+{
+  "benchmark_iterations": 50,
+  "environment": {
+    "python_version": "3.14.7",
+    "os": "win32",
+    "cpu_logical_cores": 18,
+    "total_system_ram_gb": 31.68
+  },
+  "component_latencies": {
+    "text_cleaning": {
+      "count": 50,
+      "mean_ms": 0.0007,
+      "std_ms": 0.0006,
+      "min_ms": 0.0004,
+      "p50_ms": 0.0005,
+      "p90_ms": 0.0009,
+      "p95_ms": 0.0013,
+      "p99_ms": 0.0035,
+      "max_ms": 0.0042
+    },
+    "stylometric_red_flags": {
+      "count": 50,
+      "mean_ms": 0.047,
+      "std_ms": 0.0373,
+      "min_ms": 0.0341,
+      "p50_ms": 0.0395,
+      "p90_ms": 0.0469,
+      "p95_ms": 0.0606,
+      "p99_ms": 0.216,
+      "max_ms": 0.2832
+    },
+    "v2_tfidf_inference": {
+      "count": 50,
+      "mean_ms": 16.7174,
+      "std_ms": 111.0126,
+      "min_ms": 0.8106,
+      "p50_ms": 0.8519,
+      "p90_ms": 0.9043,
+      "p95_ms": 0.942,
+      "p99_ms": 405.3167,
+      "max_ms": 793.8052
+    },
+    "minilm_near_duplicate_clustering": {
+      "count": 50,
+      "mean_ms": 279.9772,
+      "std_ms": 1788.226,
+      "min_ms": 18.0069,
+      "p50_ms": 24.0708,
+      "p90_ms": 28.6073,
+      "p95_ms": 29.3,
+      "p99_ms": 6547.284,
+      "max_ms": 12797.5264
+    },
+    "evidence_consensus_engine": {
+      "count": 50,
+      "mean_ms": 99.3959,
+      "std_ms": 527.736,
+      "min_ms": 17.9043,
+      "p50_ms": 23.5647,
+      "p90_ms": 27.8307,
+      "p95_ms": 28.9019,
+      "p99_ms": 1952.8441,
+      "max_ms": 3793.4875
+    },
+    "deterministic_fusion": {
+      "count": 50,
+      "mean_ms": 0.024,
+      "std_ms": 0.0171,
+      "min_ms": 0.0197,
+      "p50_ms": 0.0206,
+      "p90_ms": 0.0232,
+      "p95_ms": 0.027,
+      "p99_ms": 0.0946,
+      "max_ms": 0.1409
+    },
+    "total_offline_pipeline": {
+      "count": 50,
+      "mean_ms": 396.1622,
+      "std_ms": 2427.0193,
+      "min_ms": 40.3557,
+      "p50_ms": 47.9029,
+      "p90_ms": 56.217,
+      "p95_ms": 61.0831,
+      "p99_ms": 8900.7266,
+      "max_ms": 17385.2474
+    }
+  },
+  "artifact_storage_sizes": {
+    "v1_baseline_joblib_bytes": 3239700,
+    "v2_tfidf_model_joblib_bytes": 0,
+    "v2_minilm_model_joblib_bytes": 0,
+    "liar_raw_test_tsv_bytes": 301118,
+    "averitec_dev_jsonl_bytes": 0
+  }
+}

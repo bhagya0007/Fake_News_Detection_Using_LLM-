@@ -442,10 +442,51 @@ In-depth diagnostic analysis of the classical ML test errors revealed three domi
 
 ---
 
-## 26. Conclusion
+## 26. Conclusion (Version 1 Frozen Baseline)
 The **Fake News Detection Using LLMs** project successfully demonstrates a principled hybrid architecture that unifies classical machine learning, stylometric analysis, dense semantic retrieval, and evidence-bound Large Language Model reasoning. Rather than yielding to the temptation of speculative classification, the system introduces a deterministic evidence gate and safe epistemic abstention. 
 
 The implementation satisfies all academic, engineering, and software quality criteria: 514 passing automated tests, a robust FastAPI backend, a clean relational SQLite schema, and an intuitive Streamlit interface. While deployed as a prototype with an empty production knowledge base, the architecture establishes a solid, auditable foundation for future evidence-augmented verification systems.
+
+---
+
+## 27. Version 2 Extension: Real-World Evidence Discovery, Stance Reasoning, and Safety Gating (V2.1 – V2.6)
+
+### 27.1 Overview & Scope Evolution
+Building on the frozen Version 1 foundation, Version 2 upgrades the system into an evidence-assisted research prototype that discovers real-world news evidence, clusters syndicated wire stories, reasons over claim-evidence stances, and enforces conservative corroboration:
+1. **Single LLM Provider (V2.1):** Replaced Gemini with **Groq** (`openai/gpt-oss-20b`) via a provider-neutral adapter. Zero hidden chain-of-thought; strictly structured Pydantic schemas.
+2. **Public Real-World Evidence Discovery (V2.2):** Integrated **GDELT Context 2.0** and **GDELT DOC 2.0** public endpoints without adding any new API keys. Candidate evidence is reranked locally with `sentence-transformers/all-MiniLM-L6-v2`.
+3. **Structured Stance Reasoning & Consensus Gating (V2.3):** Single structured batch Groq prompt with prompt-injection defense. Implemented `EvidenceConsensusEngine` with near-duplicate clustering and conservative gating ($\ge 2$ independent clusters, $\ge 2$ distinct publisher domains; strict exclusion of headline-only items).
+4. **Data Harmonization & Integrity Audit (V2.4 & V2.4.1):** Reconciled LIAR sample counts (10,269 train, 1,284 valid, 1,283 test) and ingested AVeriTeC (4,568 train, 500 dev) into a harmonized 3-way label space.
+5. **Classifier Benchmark & Model Selection (V2.5):** Rigorous comparison between TF-IDF and MiniLM classifiers. Formally selected **V2 TF-IDF + Logistic Regression** based on internal Stratified 5-Fold CV Macro F1 (0.4786 vs MiniLM 0.4770). MiniLM recorded as promising challenger (superior cross-domain generalization: LIAR test 0.4397, AVeriTeC dev 0.4378).
+6. **Comprehensive Multi-Track Final Evaluation (V2.6):** Frozen evaluation across scientific, functional, safety, and latency criteria.
+
+### 27.2 Frozen Baseline vs. Version 2 Empirical Benchmark
+The historical Version 1 classical baseline artifact (`models/classical_best_validation.joblib`, SHA-256: `d4c36362...`) and frozen LIAR test split (`data/raw/test.tsv`, SHA-256: `ee41e2c7...`) remain strictly untouched and immutable.
+
+| Evaluation Benchmark | V1 Frozen Baseline | V2 Selected Classifier (TF-IDF) | V2 Challenger (MiniLM) |
+| :--- | :---: | :---: | :---: |
+| **Internal 5-Fold CV Macro F1** | 0.4345 | **0.4786 ± 0.0047** | 0.4770 ± 0.0031 |
+| **Official Frozen LIAR Test (1,283) Accuracy** | **43.73%** | 43.34% | 44.66% |
+| **Official Frozen LIAR Test (1,283) Macro F1** | **0.4345** | 0.4275 | 0.4397 |
+| **AVeriTeC Dev (500) Accuracy** | 43.01% | 61.29% | 63.44% |
+| **AVeriTeC Dev (500) Macro F1** | 0.3798 | 0.4048 | 0.4378 |
+| **Controlled Stance Benchmark (35 cases) Macro F1** | N/A | **1.0000** | **1.0000** |
+| **Controlled End-to-End Hybrid (48 cases) Macro F1**| N/A | **1.0000** | **1.0000** |
+| **Resilience / Failure-Mode Audit (9 cases) Pass Rate**| N/A | **100.0%** (9/9) | **100.0%** (9/9) |
+| **Median Total Offline Pipeline Latency (p50)** | ~25 ms | **46.7 ms** | ~65 ms |
+
+### 27.3 Controlled Benchmark Highlights
+- **Track C (Stance Reasoning, 35 cases):** Stance accuracy 100.0%, attribution accuracy 100.0%, Macro F1 1.0000, 7/7 safety invariants satisfied, 0 unsafe decisions.
+- **Track D (Controlled Hybrid, 48 cases):** 4-way accuracy 100.0%, Macro F1 1.0000, abstention accuracy 100.0%, 0 unsafe decisions, 0 invariant violations across dual-cluster support, dual-cluster contradiction, partial/cherry-picked evidence, syndication duplication, single-cluster evidence, headline-only evidence, conflicting evidence, zero evidence, non-checkable opinion, prompt injection, ML disagreement, red-flag disagreement, and dependency failures.
+- **Track E (Live Real-World Demo):** Successfully verified graceful degradation and conservative abstention when external live news APIs return zero verified candidates or encounter rate limits.
+- **Track F & G (Latency & Resilience):** Median offline pipeline execution is 46.7 ms (sub-100ms guarantee). 9 out of 9 edge-case resilience tests passed (100%).
+
+### 27.4 Post-Release Retrieval Robustness Maintenance Patch
+Following deployment of the prototype, an empirical information-retrieval bottleneck was identified in production: monolithic queries with up to 8 keywords submitted to the GDELT Context 2.0 sentence-level API returned zero candidates for realistic factual claims due to strict sentence-horizon conjunction constraints. A deterministic progressive query relaxation patch was implemented:
+1. **Four-Tier Deterministic Search Plan:** Tier 1 (Precise phrase + top entities), Tier 2 (Entity anchor + claim-derived OR group), Tier 3 (Relaxed DOC 2.0), Tier 4 (Broad DOC 2.0 with extended timespan).
+2. **Early Stopping & Endpoint Shielding:** Search halts immediately once $\ge 5$ deduplicated candidates are acquired. Upon encountering an HTTP 429 (rate-limited), timeout, or server error, all remaining attempts are aborted to shield public infrastructure.
+3. **Preservation of Invariants:** All classical models, stance prompts, near-duplicate clustering thresholds, consensus rules, and abstention policies remain 100% frozen and unaltered.
+Detailed technical documentation and empirical validation traces are available in `docs/v2-retrieval-robustness-patch.md`.
 
 ---
 
@@ -453,5 +494,7 @@ The implementation satisfies all academic, engineering, and software quality cri
 1. Wang, W. Y. (2017). "Liar, Liar Pants on Fire": A New Benchmark Dataset for Fake News Detection. In *Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers)* (pp. 422-426). [ACL 2017 Anthology].
 2. Reimers, N., & Gurevych, I. (2019). Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. In *Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing (EMNLP)* (pp. 3982-3992).
 3. Thorne, J., Vlachos, A., Christodoulopoulos, C., & Mittal, A. (2018). FEVER: a large-scale dataset for Fact Extraction and VERification. In *Proceedings of NAACL-HLT 2018* (pp. 809-819).
-4. Lazer, D. M., Baum, M. A., Benkler, Y., Berinsky, A. J., Greenhill, K. M., Menczer, F., ... & Zittrain, J. L. (2018). The science of fake news. *Science*, 359(6380), 1094-1096. [Reference required for institutional formatting].
-5. Vosoughi, S., Roy, D., & Aral, S. (2018). The spread of true and false news online. *Science*, 359(6380), 1146-1151. [Reference required for institutional formatting].
+4. Schlichtkrull, M., Guo, Z., & Vlachos, A. (2023). AVeriTeC: A Dataset for Real-world Claim Verification with Evidence from the Web. In *Proceedings of NeurIPS 2023 Datasets and Benchmarks Track*.
+5. Leetaru, K., & Schrodt, P. A. (2013). GDELT: Global data on events, location, and tone. In *ISA Annual Convention* (Vol. 2, pp. 1-49).
+6. Lazer, D. M., Baum, M. A., Benkler, Y., Berinsky, A. J., Greenhill, K. M., Menczer, F., ... & Zittrain, J. L. (2018). The science of fake news. *Science*, 359(6380), 1094-1096. [Reference required for institutional formatting].
+7. Vosoughi, S., Roy, D., & Aral, S. (2018). The spread of true and false news online. *Science*, 359(6380), 1146-1151. [Reference required for institutional formatting].

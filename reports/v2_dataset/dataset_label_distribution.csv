@@ -1,0 +1,9 @@
+dataset,total_raw,eligible_for_v2_training,likely_reliable,misleading,likely_fake,unverifiable,excluded_or_unmapped
+LIAR (Train Split),10269,10269,3649,3780,2840,0,0
+LIAR (Validation Split),1284,0,420,485,379,0,0
+LIAR (Protected Test),1283,0,460,481,342,0,0
+AVeriTeC (Train Split),3068,3067,848,195,1742,282,1
+AVeriTeC (Protected Dev),500,0,122,38,305,35,0
+MultiFC (Research Candidate),34842,21339,6655,3753,12857,742,10835
+FEVER (Auxiliary Dev),19998,0,6666,0,6666,6666,0
+Combined Canonical Training Pool (LIAR Train + AVeriTeC Train),12192,12192,4062,3589,4275,266,0

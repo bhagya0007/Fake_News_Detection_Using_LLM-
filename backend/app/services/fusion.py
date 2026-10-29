@@ -23,6 +23,7 @@ import logging
 from typing import List, Optional, Union
 
 from backend.app.schemas import (
+    DocumentEvidenceConsensus,
     EvidenceItem,
     EvidenceRetrievalResult,
     EvidenceStance,
@@ -131,6 +132,7 @@ def fuse(
     evidence: Optional[EvidenceRetrievalResult] = None,
     has_checkable_claims: bool = True,
     allow_synthetic_evidence: bool = False,
+    evidence_consensus: Optional[DocumentEvidenceConsensus] = None,
 ) -> FinalAssessment:
     """Perform deterministic hybrid decision fusion and abstention.
 
@@ -142,6 +144,7 @@ def fuse(
         has_checkable_claims: Whether the input contains checkable factual claims.
         allow_synthetic_evidence: If True, synthetic fixtures are treated as usable
                                   (STRICTLY restricted to unit tests and explicit demo mode).
+        evidence_consensus: Optional deterministic consensus result across evidence clusters.
 
     Returns:
         FinalAssessment with strict abstention consistency and audit telemetry.
@@ -251,6 +254,84 @@ def fuse(
                 model_agreement=model_agreement,
             ),
         )
+
+    # -------------------------------------------------------------------------
+    # Rule 2B (V2.3): Deterministic Evidence Consensus Gating
+    # -------------------------------------------------------------------------
+    if evidence_consensus is not None:
+        if evidence_consensus.conflict_detected or evidence_consensus.overall_stance == "conflicting":
+            signals_used = ["evidence_gate", "evidence_consensus_conflict"]
+            reason = (
+                f"{demo_prefix}Deterministic evidence consensus detected conflicting evidence across clusters "
+                f"({evidence_consensus.reason}); system safely abstained."
+            )
+            return FinalAssessment(
+                verdict=VerdictLabel.unverifiable,
+                support_score=0.0,
+                reason=reason,
+                abstained=True,
+                signals_used=signals_used,
+                fusion_signals=FusionSignals(
+                    ml_label=ml_label,
+                    ml_max_probability=round(ml_max_prob, 4) if ml_max_prob is not None else None,
+                    llm_label=llm_label,
+                    llm_evidence_support=llm_support,
+                    evidence_available=True,
+                    evidence_support=EvidenceSupport.unavailable,
+                    real_evidence_count=real_count,
+                    synthetic_evidence_count=synthetic_count,
+                    red_flag_count=total_rf,
+                    high_severity_red_flag_count=high_rf,
+                    model_agreement=model_agreement,
+                    evidence_consensus_stance=evidence_consensus.overall_stance,
+                    evidence_consensus_sufficient=evidence_consensus.overall_sufficient,
+                    eligible_clusters_count=evidence_consensus.total_eligible_clusters,
+                ),
+            )
+
+        if not evidence_consensus.overall_sufficient:
+            signals_used = ["evidence_gate", "insufficient_consensus"]
+            reason = (
+                f"{demo_prefix}Candidate evidence failed conservative corroboration thresholds "
+                f"({evidence_consensus.reason}); system safely abstained."
+            )
+            return FinalAssessment(
+                verdict=VerdictLabel.unverifiable,
+                support_score=0.0,
+                reason=reason,
+                abstained=True,
+                signals_used=signals_used,
+                fusion_signals=FusionSignals(
+                    ml_label=ml_label,
+                    ml_max_probability=round(ml_max_prob, 4) if ml_max_prob is not None else None,
+                    llm_label=llm_label,
+                    llm_evidence_support=llm_support,
+                    evidence_available=True,
+                    evidence_support=EvidenceSupport.unavailable,
+                    real_evidence_count=real_count,
+                    synthetic_evidence_count=synthetic_count,
+                    red_flag_count=total_rf,
+                    high_severity_red_flag_count=high_rf,
+                    model_agreement=model_agreement,
+                    evidence_consensus_stance=evidence_consensus.overall_stance,
+                    evidence_consensus_sufficient=evidence_consensus.overall_sufficient,
+                    eligible_clusters_count=evidence_consensus.total_eligible_clusters,
+                ),
+            )
+
+        # Sufficient consensus established - set evidence flags for downstream rules
+        if evidence_consensus.overall_stance == "supports":
+            has_supporting_evidence = True
+            has_contradicting_evidence = False
+            only_related_or_unknown_evidence = False
+        elif evidence_consensus.overall_stance == "contradicts":
+            has_contradicting_evidence = True
+            has_supporting_evidence = False
+            only_related_or_unknown_evidence = False
+        elif evidence_consensus.overall_stance == "partial":
+            has_supporting_evidence = False
+            has_contradicting_evidence = False
+            only_related_or_unknown_evidence = False
 
     if only_related_or_unknown_evidence:
         signals_used = ["evidence_gate"]
@@ -541,6 +622,7 @@ def fuse(
 def fuse_input(
     fusion_input: FusionInput,
     allow_synthetic_evidence: bool = False,
+    evidence_consensus: Optional[DocumentEvidenceConsensus] = None,
 ) -> FinalAssessment:
     """Convenience wrapper accepting a single FusionInput container."""
     llm = fusion_input.llm if fusion_input.llm_available else None
@@ -551,5 +633,6 @@ def fuse_input(
         evidence=fusion_input.evidence,
         has_checkable_claims=fusion_input.has_checkable_claims,
         allow_synthetic_evidence=allow_synthetic_evidence,
+        evidence_consensus=evidence_consensus,
     )
 

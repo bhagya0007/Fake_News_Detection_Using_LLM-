@@ -21,6 +21,7 @@ from backend.app.schemas import (
     LLMAssessment,
     LLMCallMetadata,
     SourceAttribution,
+    StanceReasoningBatchResponse,
     VerdictLabel,
 )
 
@@ -137,6 +138,9 @@ class MockLLMProvider(BaseLLMProvider):
                 unsupported_claims=[],
                 short_reason="Deterministic mock verification completed successfully.",
             )
+
+        if response_model is StanceReasoningBatchResponse:
+            return StanceReasoningBatchResponse(assessments=[])
 
         raise LLMProviderError(
             f"MockLLMProvider has no predefined response for schema '{response_model.__name__}'. "

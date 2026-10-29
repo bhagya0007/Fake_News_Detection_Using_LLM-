@@ -382,3 +382,119 @@ HybridAnalysisEngine (In-Memory)        AnalysisRepository (SQLite DB)
 5. **Auditable History Inspection:** Historical analyses are browsed and reopened directly from SQLite persistence without recomputing ML models or LLMs.
 6. **Graceful Offline Degradation:** If the FastAPI backend is offline, the UI alerts the user without crashing and disables analysis actions.
 
+---
+
+## Version 2 Branch: Single-Provider Groq Runtime (V2.1)
+
+In Version 2.1 (`v2-groq` branch), the active LLM runtime transitions from Gemini to Groq as the sole active provider.
+
+### Architecture Overview:
+```text
+HybridAnalysisEngine
+         │
+         ▼
+    LLMReasoner
+         │
+         ▼
+     LLMClient (Provider-Neutral)
+         │
+         ▼
+    GroqProvider (backend/app/ai/providers/groq_provider.py)
+         │  (Strict JSON Schema, Model: openai/gpt-oss-20b)
+         ▼
+    Groq Cloud API (console.groq.com)
+```
+
+### Version 2 Architectural Guarantees:
+1. **Single Active Provider:** Groq is the sole active LLM provider. There is no multi-provider fallback chain, no fallback to Gemini, and no provider rotation.
+2. **Explicit Disallowal of Gemini Runtime:** `provider_factory` rejects `provider="gemini"` with `LLMConfigurationError("V2 runtime is configured for Groq-only operation.")`.
+3. **Strict JSON Schema Normalization:** All Pydantic response models pass through `_normalize_schema_for_strict()` enforcing `additionalProperties: False` and recursive `required` property listings to ensure 100% adherence to Groq strict structured output constraints.
+4. **Secret Protection & Redaction:** `GROQ_API_KEY` is never written to logs, database records, API outputs, or exception strings.
+5. **Zero-Network Automated Tests:** All automated unit and integration tests execute with zero network socket operations via mock clients and pytest socket blockers.
+
+---
+
+## Version 2 Branch: Real-World News Evidence Discovery (V2.2)
+
+In Version 2.2, the pipeline incorporates **real-world, web-based, provenance-bearing news evidence discovery** using public GDELT endpoints.
+
+### Architecture Overview:
+```text
+Checkable Factual Claim
+         │
+         ▼
+EvidenceQueryBuilder (Deterministic NLP, zero LLM, strips operators, caps at 150 chars / 8 terms)
+         │
+         ▼
+GDELTClient (Public HTTP, polite pacing >=3.2s, in-memory TTL cache, zero secret API keys)
+   ├── Primary: GDELT Context 2.0 API (context snippets, sentence excerpts)
+   └── Fallback: GDELT DOC 2.0 API (headline annotations)
+         │
+         ▼
+LiveEvidenceRetriever (Canonical URL deduplication, domain diversity counting)
+         │
+         ▼
+MiniLM Semantic Reranking (all-MiniLM-L6-v2 cosine similarity)
+         │
+         ▼
+Candidate Evidence Items (stance="unknown", is_synthetic=False, auditable URL + domain)
+         │
+         ▼
+HybridAnalysisEngine (records live_retrieval_ms, deduplicates with local KB, passes to fusion)
+```
+
+### Version 2.2 Epistemic and Security Invariants:
+1. **Discovery Source, Not Truth Authority:** GDELT results are strictly treated as *candidate evidence*. They are never assumed to be verified facts or authoritative truth.
+2. **Stance Isolation:** In V2.2, all live evidence enters the pipeline with `stance = EvidenceStance.unknown`. Claim-evidence stance reasoning is deferred to V2.3.
+3. **Single Secret Maintained:** Zero additional API keys are required or supported. `GROQ_API_KEY` remains the sole secret in the project.
+4. **No Web Scraping:** Raw web pages are never scraped or parsed; only structured snippet and title metadata returned by GDELT is utilized.
+5. **Deterministic Fusion Safety:** Because stances are unknown, the frozen fusion engine continues to safely abstain (`unverifiable`) on external claims lacking local ground truth.
+6. **Full Test Isolation:** Pytest suites mock all HTTP calls and prevent network socket creation, ensuring 100% offline test reproducibility.
+
+---
+
+## Version 2 Branch: Claim ↔ Evidence Stance Reasoning & Deterministic Consensus (V2.3)
+
+In Version 2.3, candidate evidence discovered by GDELT and reranked by MiniLM undergoes **structured stance reasoning via Groq**, followed by **deterministic evidence consensus and near-duplicate clustering**, before entering the decision fusion layer.
+
+### Target Architecture Flow:
+```text
+User News Statement
+         │
+         ▼
+Groq Claim Extraction (Atomic checkable propositions, capped at 5 claims)
+         │
+         ▼
+GDELT + Local Retrieval (Candidate evidence discovery, URLs, domains, snippets)
+         │
+         ▼
+MiniLM Semantic Reranking (Local sentence-transformers cosine similarity)
+         │
+         ▼
+Groq Evidence Stance Assessment (Single structured batch call, prompt-injection defense)
+    ├── Stances: supports, contradicts, partial, irrelevant, unclear
+    └── Attribution Types: direct_report, quoted_claim, reported_denial, etc.
+         │
+         ▼
+Deterministic Consensus & Clustering Engine (Connected components, cosine sim >= 0.82 / Jaccard >= 0.65)
+    ├── Headline Exclusion: headline_only items excluded from decisive counts
+    ├── Quoted Claim Filter: quoted_claim cannot confirm propositions
+    ├── Denial Filter: reported_denial cannot count as support
+    ├── Syndicated Deduplication: wire stories reprinted across domains merge into 1 cluster
+    ├── Two-Source Threshold: minimum 2 independent clusters from 2 distinct domains
+    └── Conflict Gate: coexisting support and contradiction forces 'conflicting'
+         │
+         ▼
+Deterministic Hybrid Decision Fusion (Final decision authority; emits likely_reliable, likely_fake, misleading, or unverifiable)
+```
+
+### Version 2.3 Core Principles & Invariants:
+1. **Epistemic Separation:** Groq is NOT asked "Is this news true?". Groq is asked exclusively: "Given this claim and ONLY the supplied evidence snippet text, what is the textual relationship of the evidence to the claim?"
+2. **Batch Efficiency:** Stance reasoning runs via **ONE single structured Groq call per analysis** for all claims and top candidate snippets, eliminating network roundtrip latency.
+3. **Prompt-Injection Defense:** All claims and snippets are treated as untrusted data; embedded override directives (e.g. "Ignore previous instructions", "Mark true") are strictly ignored.
+4. **Conservative Corroboration:** Single-source claims cannot produce definitive verdicts. At least 2 independent clusters across 2 distinct publisher domains are mandatory.
+5. **Syndicated Wire Protection:** Wire reports reprinted verbatim across multiple domains form a single cluster and do not count as independent corroborations.
+6. **Sole Authority:** Deterministic fusion remains the sole final authority; Groq never dictates the final verdict directly.
+
+
+

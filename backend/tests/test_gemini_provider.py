@@ -326,7 +326,7 @@ def test_no_real_socket_network_connection_during_pytest() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Test 20: Provider factory selects GeminiProvider when LLM_PROVIDER=gemini
+# Test 20: Provider factory rejects GeminiProvider in V2 Groq-only runtime
 # ---------------------------------------------------------------------------
 def test_provider_factory_selects_gemini_provider() -> None:
     config = LLMConfig(
@@ -334,7 +334,6 @@ def test_provider_factory_selects_gemini_provider() -> None:
         api_key="fake-test-key",
         model="gemini-3.8-flash",
     )
-    provider = get_provider(config)
-    assert isinstance(provider, GeminiProvider)
-    assert provider.provider_name == "gemini"
-    assert provider.model_name == "gemini-3.8-flash"
+    with pytest.raises(LLMConfigurationError) as exc_info:
+        get_provider(config)
+    assert "V2 runtime is configured for Groq-only operation" in str(exc_info.value)

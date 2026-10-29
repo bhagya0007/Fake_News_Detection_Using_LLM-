@@ -1,0 +1,4 @@
+,pred_likely_reliable,pred_misleading,pred_likely_fake
+true_likely_reliable,39,12,71
+true_misleading,4,6,28
+true_likely_fake,39,16,250

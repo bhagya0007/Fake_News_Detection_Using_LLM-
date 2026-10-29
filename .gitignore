@@ -32,6 +32,9 @@ desktop.ini
 # Data and Artifacts
 data/raw/*
 !data/raw/.gitkeep
+data/v2_raw/multifc/
+data/v2_processed/multifc_harmonized.jsonl
+*.zip
 
 # Models
 models/*

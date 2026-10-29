@@ -197,6 +197,21 @@ class LLMClient(LLMProvider):
                     f"Received empty response from LLM; expected '{response_model.__name__}' JSON."
                 )
 
+            # Strip markdown code blocks if present
+            if "```" in stripped:
+                if stripped.startswith("```"):
+                    lines = stripped.splitlines()
+                    if lines and lines[0].startswith("```"):
+                        lines = lines[1:]
+                    if lines and lines[-1].strip().startswith("```"):
+                        lines = lines[:-1]
+                    stripped = "\n".join(lines).strip()
+                elif "```json" in stripped:
+                    start = stripped.find("```json") + 7
+                    end = stripped.find("```", start)
+                    if end != -1:
+                        stripped = stripped[start:end].strip()
+
             try:
                 parsed_json = json.loads(stripped)
             except json.JSONDecodeError as exc:

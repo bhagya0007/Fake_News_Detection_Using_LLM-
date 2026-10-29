@@ -1,0 +1,535 @@
+{
+  "timestamp": "2026-10-18 16:06:43",
+  "immutable_hashes": {
+    "v1_baseline_joblib": "d4c3636277761f5399166ee41c0eec57cafe7b9216bacfc18d81f26fea415c92",
+    "liar_test_tsv": "ee41e2c741e0019216952625145af8c4aa8c8d3057ec68284b134267bb845e6f"
+  },
+  "sample_counts": {
+    "liar_validation": 1284,
+    "liar_test": 1283,
+    "averitec_dev_applicable": 465,
+    "averitec_dev_unverifiable": 35,
+    "averitec_dev_total": 500
+  },
+  "models_evaluated": [
+    "v1_classical_baseline",
+    "v2_tfidf_logreg",
+    "v2_minilm_logreg"
+  ],
+  "leading_v2_model": "v2_minilm_logreg",
+  "results": {
+    "v1_classical_baseline": {
+      "model_name": "v1_classical_baseline",
+      "model_type": "V1 TF-IDF + Logistic Regression",
+      "liar_validation": {
+        "model_name": "v1_classical_baseline",
+        "model_type": "V1 TF-IDF + Logistic Regression",
+        "split_name": "LIAR Validation",
+        "sample_count": 1284,
+        "accuracy": 0.4688,
+        "macro_f1": 0.4687,
+        "weighted_f1": 0.4672,
+        "per_class": {
+          "likely_reliable": {
+            "precision": 0.4946,
+            "recall": 0.5429,
+            "f1_score": 0.5176,
+            "support": 420
+          },
+          "misleading": {
+            "precision": 0.4675,
+            "recall": 0.4,
+            "f1_score": 0.4311,
+            "support": 485
+          },
+          "likely_fake": {
+            "precision": 0.4412,
+            "recall": 0.4749,
+            "f1_score": 0.4574,
+            "support": 379
+          }
+        },
+        "confusion_matrix": [
+          [
+            228,
+            110,
+            82
+          ],
+          [
+            145,
+            194,
+            146
+          ],
+          [
+            88,
+            111,
+            180
+          ]
+        ],
+        "cm_csv_path": "reports/v2_classifier/confusion_matrices/v1_classical_baseline_liar_validation_cm.csv",
+        "cm_png_path": "reports/v2_classifier/figures/v1_classical_baseline_liar_validation_cm.png",
+        "inference_latency_seconds": 0.084
+      },
+      "liar_test": {
+        "model_name": "v1_classical_baseline",
+        "model_type": "V1 TF-IDF + Logistic Regression",
+        "split_name": "LIAR Test",
+        "sample_count": 1283,
+        "accuracy": 0.4373,
+        "macro_f1": 0.4345,
+        "weighted_f1": 0.4362,
+        "per_class": {
+          "likely_reliable": {
+            "precision": 0.4735,
+            "recall": 0.5043,
+            "f1_score": 0.4884,
+            "support": 460
+          },
+          "misleading": {
+            "precision": 0.4401,
+            "recall": 0.3742,
+            "f1_score": 0.4045,
+            "support": 481
+          },
+          "likely_fake": {
+            "precision": 0.388,
+            "recall": 0.4357,
+            "f1_score": 0.4105,
+            "support": 342
+          }
+        },
+        "confusion_matrix": [
+          [
+            232,
+            125,
+            103
+          ],
+          [
+            169,
+            180,
+            132
+          ],
+          [
+            89,
+            104,
+            149
+          ]
+        ],
+        "cm_csv_path": "reports/v2_classifier/confusion_matrices/v1_classical_baseline_liar_test_cm.csv",
+        "cm_png_path": "reports/v2_classifier/figures/v1_classical_baseline_liar_test_cm.png",
+        "inference_latency_seconds": 0.106
+      },
+      "averitec_dev_applicable": {
+        "model_name": "v1_classical_baseline",
+        "model_type": "V1 TF-IDF + Logistic Regression",
+        "split_name": "AVeriTeC Dev (Applicable)",
+        "sample_count": 465,
+        "accuracy": 0.4301,
+        "macro_f1": 0.3798,
+        "weighted_f1": 0.4675,
+        "per_class": {
+          "likely_reliable": {
+            "precision": 0.3732,
+            "recall": 0.4344,
+            "f1_score": 0.4015,
+            "support": 122
+          },
+          "misleading": {
+            "precision": 0.1348,
+            "recall": 0.5,
+            "f1_score": 0.2123,
+            "support": 38
+          },
+          "likely_fake": {
+            "precision": 0.7033,
+            "recall": 0.4197,
+            "f1_score": 0.5257,
+            "support": 305
+          }
+        },
+        "confusion_matrix": [
+          [
+            53,
+            27,
+            42
+          ],
+          [
+            7,
+            19,
+            12
+          ],
+          [
+            82,
+            95,
+            128
+          ]
+        ],
+        "cm_csv_path": "reports/v2_classifier/confusion_matrices/v1_classical_baseline_averitec_dev_(applicable)_cm.csv",
+        "cm_png_path": "reports/v2_classifier/figures/v1_classical_baseline_averitec_dev_(applicable)_cm.png",
+        "inference_latency_seconds": 0.067
+      },
+      "averitec_dev_unverifiable_analysis": {
+        "model_name": "v1_classical_baseline",
+        "total_not_enough_evidence_claims": 35,
+        "forced_prediction_distribution": {
+          "likely_reliable": 12,
+          "misleading": 13,
+          "likely_fake": 10
+        },
+        "forced_prediction_percentages": {
+          "likely_reliable": 34.29,
+          "misleading": 37.14,
+          "likely_fake": 28.57
+        },
+        "mean_class_probabilities": {
+          "likely_reliable": 0.3467,
+          "misleading": 0.3358,
+          "likely_fake": 0.3175
+        },
+        "epistemic_observation": "When forced onto a 3-class semantic classifier without access to retrieval or evidence, claims lacking evidence are arbitrarily partitioned across semantic labels. This confirms that 'unverifiable' is an epistemic state of evidence availability, properly handled downstream by retrieval and fusion rather than semantic text classification."
+      }
+    },
+    "v2_tfidf_logreg": {
+      "model_name": "v2_tfidf_logreg",
+      "model_type": "V2 TF-IDF + Logistic Regression",
+      "liar_validation": {
+        "model_name": "v2_tfidf_logreg",
+        "model_type": "V2 TF-IDF + Logistic Regression",
+        "split_name": "LIAR Validation",
+        "sample_count": 1284,
+        "accuracy": 0.4673,
+        "macro_f1": 0.4638,
+        "weighted_f1": 0.466,
+        "per_class": {
+          "likely_reliable": {
+            "precision": 0.469,
+            "recall": 0.4857,
+            "f1_score": 0.4772,
+            "support": 420
+          },
+          "misleading": {
+            "precision": 0.4617,
+            "recall": 0.5093,
+            "f1_score": 0.4843,
+            "support": 485
+          },
+          "likely_fake": {
+            "precision": 0.4745,
+            "recall": 0.3931,
+            "f1_score": 0.43,
+            "support": 379
+          }
+        },
+        "confusion_matrix": [
+          [
+            204,
+            151,
+            65
+          ],
+          [
+            138,
+            247,
+            100
+          ],
+          [
+            93,
+            137,
+            149
+          ]
+        ],
+        "cm_csv_path": "reports/v2_classifier/confusion_matrices/v2_tfidf_logreg_liar_validation_cm.csv",
+        "cm_png_path": "reports/v2_classifier/figures/v2_tfidf_logreg_liar_validation_cm.png",
+        "inference_latency_seconds": 0.114
+      },
+      "liar_test": {
+        "model_name": "v2_tfidf_logreg",
+        "model_type": "V2 TF-IDF + Logistic Regression",
+        "split_name": "LIAR Test",
+        "sample_count": 1283,
+        "accuracy": 0.4334,
+        "macro_f1": 0.4275,
+        "weighted_f1": 0.4326,
+        "per_class": {
+          "likely_reliable": {
+            "precision": 0.4617,
+            "recall": 0.4587,
+            "f1_score": 0.4602,
+            "support": 460
+          },
+          "misleading": {
+            "precision": 0.4319,
+            "recall": 0.4615,
+            "f1_score": 0.4462,
+            "support": 481
+          },
+          "likely_fake": {
+            "precision": 0.3942,
+            "recall": 0.3596,
+            "f1_score": 0.3761,
+            "support": 342
+          }
+        },
+        "confusion_matrix": [
+          [
+            211,
+            167,
+            82
+          ],
+          [
+            152,
+            222,
+            107
+          ],
+          [
+            94,
+            125,
+            123
+          ]
+        ],
+        "cm_csv_path": "reports/v2_classifier/confusion_matrices/v2_tfidf_logreg_liar_test_cm.csv",
+        "cm_png_path": "reports/v2_classifier/figures/v2_tfidf_logreg_liar_test_cm.png",
+        "inference_latency_seconds": 0.118
+      },
+      "averitec_dev_applicable": {
+        "model_name": "v2_tfidf_logreg",
+        "model_type": "V2 TF-IDF + Logistic Regression",
+        "split_name": "AVeriTeC Dev (Applicable)",
+        "sample_count": 465,
+        "accuracy": 0.6129,
+        "macro_f1": 0.4048,
+        "weighted_f1": 0.5904,
+        "per_class": {
+          "likely_reliable": {
+            "precision": 0.4138,
+            "recall": 0.2951,
+            "f1_score": 0.3445,
+            "support": 122
+          },
+          "misleading": {
+            "precision": 0.1481,
+            "recall": 0.1053,
+            "f1_score": 0.1231,
+            "support": 38
+          },
+          "likely_fake": {
+            "precision": 0.698,
+            "recall": 0.8033,
+            "f1_score": 0.747,
+            "support": 305
+          }
+        },
+        "confusion_matrix": [
+          [
+            36,
+            8,
+            78
+          ],
+          [
+            6,
+            4,
+            28
+          ],
+          [
+            45,
+            15,
+            245
+          ]
+        ],
+        "cm_csv_path": "reports/v2_classifier/confusion_matrices/v2_tfidf_logreg_averitec_dev_(applicable)_cm.csv",
+        "cm_png_path": "reports/v2_classifier/figures/v2_tfidf_logreg_averitec_dev_(applicable)_cm.png",
+        "inference_latency_seconds": 0.043
+      },
+      "averitec_dev_unverifiable_analysis": {
+        "model_name": "v2_tfidf_logreg",
+        "total_not_enough_evidence_claims": 35,
+        "forced_prediction_distribution": {
+          "likely_reliable": 13,
+          "misleading": 2,
+          "likely_fake": 20
+        },
+        "forced_prediction_percentages": {
+          "likely_reliable": 37.14,
+          "misleading": 5.71,
+          "likely_fake": 57.14
+        },
+        "mean_class_probabilities": {
+          "likely_reliable": 0.3691,
+          "misleading": 0.2106,
+          "likely_fake": 0.4203
+        },
+        "epistemic_observation": "When forced onto a 3-class semantic classifier without access to retrieval or evidence, claims lacking evidence are arbitrarily partitioned across semantic labels. This confirms that 'unverifiable' is an epistemic state of evidence availability, properly handled downstream by retrieval and fusion rather than semantic text classification."
+      }
+    },
+    "v2_minilm_logreg": {
+      "model_name": "v2_minilm_logreg",
+      "model_type": "V2 Frozen all-MiniLM-L6-v2 + Logistic Regression",
+      "liar_validation": {
+        "model_name": "v2_minilm_logreg",
+        "model_type": "V2 Frozen all-MiniLM-L6-v2 + Logistic Regression",
+        "split_name": "LIAR Validation",
+        "sample_count": 1284,
+        "accuracy": 0.4478,
+        "macro_f1": 0.443,
+        "weighted_f1": 0.4458,
+        "per_class": {
+          "likely_reliable": {
+            "precision": 0.465,
+            "recall": 0.4429,
+            "f1_score": 0.4537,
+            "support": 420
+          },
+          "misleading": {
+            "precision": 0.4363,
+            "recall": 0.5155,
+            "f1_score": 0.4726,
+            "support": 485
+          },
+          "likely_fake": {
+            "precision": 0.4469,
+            "recall": 0.3668,
+            "f1_score": 0.4029,
+            "support": 379
+          }
+        },
+        "confusion_matrix": [
+          [
+            186,
+            160,
+            74
+          ],
+          [
+            137,
+            250,
+            98
+          ],
+          [
+            77,
+            163,
+            139
+          ]
+        ],
+        "cm_csv_path": "reports/v2_classifier/confusion_matrices/v2_minilm_logreg_liar_validation_cm.csv",
+        "cm_png_path": "reports/v2_classifier/figures/v2_minilm_logreg_liar_validation_cm.png",
+        "inference_latency_seconds": 9.329
+      },
+      "liar_test": {
+        "model_name": "v2_minilm_logreg",
+        "model_type": "V2 Frozen all-MiniLM-L6-v2 + Logistic Regression",
+        "split_name": "LIAR Test",
+        "sample_count": 1283,
+        "accuracy": 0.4466,
+        "macro_f1": 0.4397,
+        "weighted_f1": 0.4462,
+        "per_class": {
+          "likely_reliable": {
+            "precision": 0.5058,
+            "recall": 0.4717,
+            "f1_score": 0.4882,
+            "support": 460
+          },
+          "misleading": {
+            "precision": 0.4339,
+            "recall": 0.4844,
+            "f1_score": 0.4578,
+            "support": 481
+          },
+          "likely_fake": {
+            "precision": 0.388,
+            "recall": 0.3596,
+            "f1_score": 0.3733,
+            "support": 342
+          }
+        },
+        "confusion_matrix": [
+          [
+            217,
+            168,
+            75
+          ],
+          [
+            129,
+            233,
+            119
+          ],
+          [
+            83,
+            136,
+            123
+          ]
+        ],
+        "cm_csv_path": "reports/v2_classifier/confusion_matrices/v2_minilm_logreg_liar_test_cm.csv",
+        "cm_png_path": "reports/v2_classifier/figures/v2_minilm_logreg_liar_test_cm.png",
+        "inference_latency_seconds": 9.476
+      },
+      "averitec_dev_applicable": {
+        "model_name": "v2_minilm_logreg",
+        "model_type": "V2 Frozen all-MiniLM-L6-v2 + Logistic Regression",
+        "split_name": "AVeriTeC Dev (Applicable)",
+        "sample_count": 465,
+        "accuracy": 0.6344,
+        "macro_f1": 0.4378,
+        "weighted_f1": 0.6154,
+        "per_class": {
+          "likely_reliable": {
+            "precision": 0.4756,
+            "recall": 0.3197,
+            "f1_score": 0.3824,
+            "support": 122
+          },
+          "misleading": {
+            "precision": 0.1765,
+            "recall": 0.1579,
+            "f1_score": 0.1667,
+            "support": 38
+          },
+          "likely_fake": {
+            "precision": 0.7163,
+            "recall": 0.8197,
+            "f1_score": 0.7645,
+            "support": 305
+          }
+        },
+        "confusion_matrix": [
+          [
+            39,
+            12,
+            71
+          ],
+          [
+            4,
+            6,
+            28
+          ],
+          [
+            39,
+            16,
+            250
+          ]
+        ],
+        "cm_csv_path": "reports/v2_classifier/confusion_matrices/v2_minilm_logreg_averitec_dev_(applicable)_cm.csv",
+        "cm_png_path": "reports/v2_classifier/figures/v2_minilm_logreg_averitec_dev_(applicable)_cm.png",
+        "inference_latency_seconds": 4.544
+      },
+      "averitec_dev_unverifiable_analysis": {
+        "model_name": "v2_minilm_logreg",
+        "total_not_enough_evidence_claims": 35,
+        "forced_prediction_distribution": {
+          "likely_reliable": 19,
+          "misleading": 3,
+          "likely_fake": 13
+        },
+        "forced_prediction_percentages": {
+          "likely_reliable": 54.29,
+          "misleading": 8.57,
+          "likely_fake": 37.14
+        },
+        "mean_class_probabilities": {
+          "likely_reliable": 0.3698,
+          "misleading": 0.2295,
+          "likely_fake": 0.4007
+        },
+        "epistemic_observation": "When forced onto a 3-class semantic classifier without access to retrieval or evidence, claims lacking evidence are arbitrarily partitioned across semantic labels. This confirms that 'unverifiable' is an epistemic state of evidence availability, properly handled downstream by retrieval and fusion rather than semantic text classification."
+      }
+    }
+  }
+}

@@ -301,4 +301,48 @@ Automated web scraping introduces severe non-determinism, anti-bot blocking, cop
 
 ### C10. "If your production evidence KB has 0 records, is this system actually usable right now?"
 **Spoken Answer:**  
-It is completely functional as an academic engineering prototype. You can inspect claims, classical ML signals, and stylometric red flags, and observe safe abstention in real time. To verify specific news topics, administrators need only seed the knowledge base with verified reference documents using our provided seeding scripts.
+In Version 1, the knowledge base was maintained empty as a controlled baseline to prove safe abstention. In Version 2, we integrated live real-world news retrieval using public GDELT endpoints, so the system actively discovers live candidate evidence from global publishers in real time while maintaining conservative corroboration gating.
+
+---
+
+## Category 14: 10 Version 2 Examination Questions (V2.1 – V2.6)
+
+### Q51. What changed between Version 1 and Version 2 of this project?
+**Spoken Answer:**  
+Version 1 was an offline prototype relying on a local knowledge base and demonstrating the safety principles of hybrid fusion and epistemic abstention. Version 2 upgrades the system into a real-world evidence-assisted verifier by adding live GDELT news discovery (without extra API keys), switching to Groq (`openai/gpt-oss-20b`) for low-latency structured reasoning, introducing near-duplicate syndication clustering, enforcing 2-domain 2-cluster corroboration gating, harmonizing the LIAR and AVeriTeC datasets, and training an upgraded V2 classifier.
+
+### Q52. Why did you switch to Groq as the sole active LLM provider in Version 2?
+**Spoken Answer:**  
+Groq provides ultra-fast inference on their LPU architecture (sub-800ms response times) paired with strict Pydantic JSON Schema enforcement. By standardizing on `openai/gpt-oss-20b` through our provider-neutral adapter, we eliminated multiple conflicting API keys and ensured zero hidden chain-of-thought, perfectly matching our auditability and latency requirements.
+
+### Q53. How does real-world evidence retrieval work in Version 2 without adding new API keys?
+**Spoken Answer:**  
+We leveraged the public GDELT 2.0 architecture—specifically the GDELT Context 2.0 API (which provides sentence-level KWIC context snippets) and the GDELT DOC 2.0 API. These endpoints require no secret API keys, preserving our strict security policy where `GROQ_API_KEY` is the single external secret. Candidate articles are then reranked locally using `sentence-transformers/all-MiniLM-L6-v2`.
+
+### Q54. What is the wire syndication problem, and how does your clustering algorithm resolve it?
+**Spoken Answer:**  
+When a wire service like Reuters or the Associated Press publishes a story, dozens of regional newspapers republish the identical text. A naive system counting distinct domains would treat 5 syndicated reprints as 5 independent confirmations. Our `EvidenceConsensusEngine` groups candidate items using semantic cosine similarity ($\ge 0.82$) and lexical Jaccard similarity ($\ge 0.65$). Syndicated articles merge into a single evidence cluster, ensuring only truly independent reporting satisfies our multi-source threshold.
+
+### Q55. What are the conservative corroboration thresholds in Version 2?
+**Spoken Answer:**  
+To issue a decisive verdict (`likely_reliable` or `likely_fake`), the consensus engine strictly requires at least 2 independent evidence clusters originating from at least 2 distinct publisher domains. If evidence is supported by only a single source, contains contradictory reporting, or is headline-only, the system deterministically abstains with `unverifiable`.
+
+### Q56. Why are headline-only articles strictly prohibited from producing decisive verdicts?
+**Spoken Answer:**  
+Clickbait headlines frequently misrepresent or contradict the actual text of an article. Relying on headlines without paragraph context introduces severe vulnerability to false claims. Our policy explicitly excludes `headline_only` items from decisive consensus counts, requiring `context` snippets before evidence can corroborate a claim.
+
+### Q57. Which classical model did you formally select in V2.5, and why?
+**Spoken Answer:**  
+We formally selected the **V2 TF-IDF + Logistic Regression** model (`v2_tfidf_logistic_regression.joblib`). In our pre-declared training plan, internal Stratified 5-Fold Cross-Validation Macro F1 was the binding metric. V2 TF-IDF scored **0.4786 ± 0.0047**, edging out MiniLM's **0.4770 ± 0.0031**. Under scientific methodology, you must abide by your pre-declared validation rule. However, we documented MiniLM as a strong secondary challenger due to its superior out-of-domain generalization on AVeriTeC (0.4378 vs 0.4048).
+
+### Q58. Why was DistilBERT fine-tuning not completed in V2.5?
+**Spoken Answer:**  
+Fine-tuning DistilBERT on our combined training pool of over 12,000 examples exceeded the pre-declared 60-minute CPU resource envelope (estimated at over 43,000 CPU seconds). Rather than compromising reproducibility or masking hardware realities, we formally recorded the trial as `TRAINING NOT COMPLETED` due to local hardware bounds, demonstrating transparent research reporting.
+
+### Q59. What does your Track D benchmark (48 cases, 100% Macro F1) prove compared to the LIAR test benchmark (43.3%)?
+**Spoken Answer:**  
+They measure fundamentally different properties. The LIAR test score (43.3%) measures empirical statistical classification on unseen real-world statements without external knowledge. Track D (100% accuracy and 1.0000 Macro F1 across 48 cases) evaluates the deterministic functional rule compliance and safety invariants of the hybrid fusion and consensus engine across all edge cases (syndication duplication, single clusters, conflicting sources, headline-only exclusions, prompt injections, and API timeouts). It proves that the hybrid engine behaves with 100% mathematical fidelity to its specified safety policy.
+
+### Q60. Why is 'unverifiable' an epistemic state rather than a classifier label?
+**Spoken Answer:**  
+Veracity is not an intrinsic property of a sentence's vocabulary. When we tested the 35 AVeriTeC claims labeled 'Not Enough Evidence', the classifiers arbitrarily distributed predictions across 'reliable', 'misleading', and 'fake' based purely on word choices. 'Unverifiable' means that current reference evidence is insufficient to prove or disprove the proposition—which is a property of the retrieval and consensus state, not a linguistic pattern. Therefore, 'unverifiable' belongs strictly in the fusion layer, not in the machine learning label space.

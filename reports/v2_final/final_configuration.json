@@ -1,0 +1,89 @@
+{
+  "project_id": "P_105",
+  "project_name": "Fake News Detection Using LLMs",
+  "version": "Version 2 (Frozen Release Candidate)",
+  "freeze_timestamp": "2026-10-18T16:17:00+05:30",
+  "active_branch": "v2-groq",
+  "starting_commit_sha": "f97f37ad92f9288935a4dd503cf4c1f747150bc8",
+  "selected_classifier": "v2_tfidf_logistic_regression",
+  "selection_policy": "Formally selected under pre-declared internal cross-validation criterion (Macro F1 = 0.4786 vs 0.4770).",
+  "classifier_artifact": {
+    "path": "models/v2/tfidf_logreg/model.joblib",
+    "sha256": "55923f2cd7b47cea54f7548f11b88bbd8010af7ab7db050749d8e679172494d5",
+    "hyperparameters": {
+      "ngram_range": [1, 2],
+      "C": 1.0,
+      "class_weight": "balanced",
+      "sublinear_tf": true,
+      "max_features": 25000
+    }
+  },
+  "challenger_classifier": {
+    "model_name": "v2_minilm_logistic_regression",
+    "path": "models/v2/minilm_logreg/model.joblib",
+    "sha256": "7e2410b9ec07a026e9a0995e2a86260a0e8bc6aac29b6cd7546c66d9ed34f216",
+    "role": "Secondary dense representation challenger; exhibited superior generalization on protected out-of-domain benchmarks."
+  },
+  "training_pool": {
+    "path": "data/v2_processed/classifier_train_pool.jsonl",
+    "sha256": "34b010970e4c07daebde07d367ee61873ac3f8b5d929a9ae70583d5d814da84a",
+    "sample_count": 11926,
+    "label_encoding": {
+      "likely_reliable": 0,
+      "misleading": 1,
+      "likely_fake": 2
+    }
+  },
+  "groq_provider": {
+    "provider_class": "GroqLLMProvider",
+    "model": "openai/gpt-oss-20b",
+    "temperature": 0.0,
+    "api_key_env_var": "GROQ_API_KEY"
+  },
+  "gdelt_configuration": {
+    "context_api": "https://api.gdeltproject.org/api/v2/context/context",
+    "doc_api": "https://api.gdeltproject.org/api/v2/doc/doc",
+    "max_records": 10,
+    "format": "JSON"
+  },
+  "reranker": {
+    "model": "sentence-transformers/all-MiniLM-L6-v2",
+    "embedding_dimensions": 384,
+    "metric": "cosine_similarity"
+  },
+  "retrieval_and_evidence": {
+    "evidence_top_k": 3,
+    "allow_synthetic_evidence_in_production": false,
+    "near_duplicate_clustering": {
+      "title_similarity_threshold": 0.82,
+      "syndication_grouping": true
+    }
+  },
+  "evidence_consensus_requirements": {
+    "min_independent_clusters": 2,
+    "required_stance_agreement": 1.0,
+    "headline_only_evidence_prohibited": true,
+    "abstain_on_inconclusive": true
+  },
+  "fusion": {
+    "version": "v2.3_evidence_gated_consensus_fusion",
+    "label_space": ["likely_reliable", "misleading", "likely_fake", "unverifiable"],
+    "abstention_label": "unverifiable"
+  },
+  "prompts": {
+    "stance_reasoning_prompt": "backend/app/ai/prompts/stance_reasoning_v1.txt",
+    "stance_prompt_sha256": "de1d5b68a84c7603bb5e4eb77bcc90c32854bef9504dd00e6cfbe084409b76e7"
+  },
+  "random_seed": 42,
+  "software_versions": {
+    "python": "3.14.7",
+    "os": "Windows-11-10.0.26300-SP0",
+    "fastapi": "0.142.2",
+    "streamlit": "1.65.0",
+    "groq": "1.7.0",
+    "scikit-learn": "1.9.1",
+    "torch": "2.14.1+cpu",
+    "pydantic": "2.13.5",
+    "pytest": "9.1.1"
+  }
+}

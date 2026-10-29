@@ -3,7 +3,11 @@
 **Project ID:** P_105  
 **Student:** Bhagya Varshney  
 **Repository:** p105-fake-news-detection-llm-bhagya-varshney  
-**Project Status:** Functional Academic Prototype  
+**Project Status:** Complete, Frozen Academic Research Prototype with Conservative Abstention  
+**Active Development Branch:** `v2-groq` (Version 2.6 — Complete, Frozen Evidence-Assisted Research Prototype)
+
+> [!NOTE]
+> **Version 2 Release (`v2-groq` branch):** The Version 2 runtime integrates Groq as the sole active LLM provider (`openai/gpt-oss-20b`), public GDELT Context 2.0 & DOC 2.0 endpoints for real-world candidate news discovery, local `sentence-transformers/all-MiniLM-L6-v2` semantic reranking, deterministic wire syndication clustering, and conservative corroboration gating. All historical Step 20 academic submission benchmarks, classical LIAR model artifacts, and datasets remain strictly preserved and frozen.
 
 ---
 
@@ -105,12 +109,14 @@ To maintain scientific integrity, the distinction between trained and pretrained
 
 | Component | Architecture / Model | Role in Project | Training Status |
 | :--- | :--- | :--- | :--- |
-| **Classical Classifier** | Word + Char TF-IDF + Logistic Regression (`liblinear`) | Prior statistical text-pattern classifier | **Trained specifically in this project** on the LIAR dataset |
-| **Embedding Model** | `all-MiniLM-L6-v2` | Dense vector embedding generation for evidence search | **Pretrained** (Sentence-Transformers / Hugging Face); used frozen for inference |
-| **Large Language Model** | `gemini-2.5-flash` | Claim extraction and evidence-bound reasoning | **Pretrained external API** (Google DeepMind); zero fine-tuning in this project |
+| **V1 Classical Baseline** | Word + Char TF-IDF + Logistic Regression (`liblinear`) | Frozen historical prior statistical text-pattern classifier | **Trained in V1** on LIAR dataset (`models/classical_best_validation.joblib`, SHA-256: `d4c36362...`) |
+| **V2 Selected Classifier** | Tuned Word+Char TF-IDF + Logistic Regression | Formally selected V2 statistical text-pattern classifier | **Trained in V2.5** on LIAR + AVeriTeC (Stratified 5-Fold CV Macro F1: **0.4786**) |
+| **V2 Challenger Classifier**| MiniLM Embeddings + Logistic Regression | Secondary dense-embedding text classifier | **Trained in V2.5** on LIAR + AVeriTeC (AVeriTeC Dev Macro F1: **0.4378**) |
+| **Embedding Model** | `all-MiniLM-L6-v2` | Dense vector embedding generation for reranking & clustering | **Pretrained** (Sentence-Transformers / Hugging Face); used frozen for inference |
+| **Large Language Model** | `openai/gpt-oss-20b` via Groq | Structured claim extraction and stance reasoning | **Pretrained external API** (Groq cloud); strictly zero fine-tuning |
 
 > [!NOTE]
-> Neither Gemini nor MiniLM was trained or fine-tuned during this project. Only the classical Logistic Regression model was trained on the LIAR benchmark.
+> Neither Groq nor MiniLM was trained or fine-tuned during this project. Only the classical Logistic Regression models were trained on the benchmark datasets.
 
 ---
 
@@ -292,21 +298,25 @@ pytest backend/tests/test_final_evaluation.py -v
 
 ---
 
-## Reproducible Evaluation Script
+## Reproducible Evaluation Scripts
 
-Run the automated multi-track evaluation script:
+### Version 2 Master Scientific & Safety Evaluation Suite (Current Release)
+Run the automated Version 2 evaluation suite (100% offline, 0 Groq calls, 0 GDELT calls):
+```bash
+python scripts/run_v2_final_evaluation.py
+```
+Tracks evaluated:
+1. **Cryptographic Integrity:** Verifies SHA-256 hashes for all frozen models and raw test datasets
+2. **Track C (Stance Reasoning):** 35 controlled pairs (100% accuracy, 1.0000 Macro F1, 0 unsafe decisions)
+3. **Track D (Controlled End-to-End Hybrid):** 48 balanced test cases (100% accuracy, 1.0000 Macro F1, 100% abstention accuracy, 0 invariant violations)
+4. **Track F & G (Latency & Resilience):** Latency microbenchmarking (46.7 ms p50 offline) and 9 fault-injection tests (100% pass rate)
+5. **Track E (Optional Live Demo):** Append `--live` to test real-world Groq and GDELT integration
+
+### Version 1 Historical Benchmark Script
+Run the historical Step 20 multi-track evaluation script:
 ```bash
 python scripts/evaluate_final_system.py --all-offline
 ```
-
-This command runs all seven evaluation tracks offline without requiring external network connectivity or API tokens:
-1. Controlled functional benchmark (44 test fixtures)
-2. Production abstention benchmark (20 cases)
-3. Classical ML evaluation on the LIAR test split
-4. Claim extraction rule verification
-5. Retrieval benchmark on synthetic fixtures
-6. Fusion safety invariant verification
-7. Subsystem latency and performance profiling
 
 ---
 

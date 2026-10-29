@@ -115,8 +115,22 @@ class EvidenceStance(str, Enum):
 
     supports = "supports"
     contradicts = "contradicts"
+    partial = "partial"
+    irrelevant = "irrelevant"
+    unclear = "unclear"
     related = "related"
     unknown = "unknown"
+
+
+class AttributionType(str, Enum):
+    """Attribution relationship between retrieved source text and factual proposition."""
+
+    direct_report = "direct_report"
+    quoted_claim = "quoted_claim"
+    reported_denial = "reported_denial"
+    reported_correction = "reported_correction"
+    secondary_reference = "secondary_reference"
+    unclear = "unclear"
 
 
 class ComponentExecutionStatus(str, Enum):
@@ -352,6 +366,26 @@ class EvidenceItem(BaseModel):
     is_synthetic: bool = Field(
         default=False, description="Whether this record is a synthetic demonstration fixture."
     )
+    title: Optional[str] = Field(default=None, description="Title or headline of candidate article.")
+    source_domain: Optional[str] = Field(default=None, description="Canonical domain extracted from source URL.")
+    retrieval_source: Optional[str] = Field(
+        default="local_kb", description="Discovery source channel (e.g. local_kb, gdelt_context, gdelt_doc)."
+    )
+    evidence_quality: Optional[str] = Field(
+        default=None, description="Evidence quality indicator: context_snippet, headline_only, curated_kb."
+    )
+    retrieved_at: Optional[Union[datetime, str]] = Field(
+        default=None, description="Timestamp when evidence candidate was discovered."
+    )
+    attribution_type: Optional[AttributionType] = Field(
+        default=None, description="Attribution relationship classification (e.g. direct_report, quoted_claim, reported_denial)."
+    )
+    stance_reason: Optional[str] = Field(
+        default=None, max_length=300, description="Concise justification for evaluated stance."
+    )
+    context_sufficient: Optional[bool] = Field(
+        default=None, description="Whether excerpt provides sufficient context to establish stance."
+    )
 
 
 class EvidenceRetrievalResult(BaseModel):
@@ -368,6 +402,91 @@ class EvidenceRetrievalResult(BaseModel):
     no_sufficient_evidence: bool = Field(
         default=False, description="Flag indicating no evidence cleared the similarity threshold."
     )
+    unique_source_domains: Optional[int] = Field(
+        default=0, ge=0, description="Count of distinct domains in candidate evidence set."
+    )
+
+
+# ---------------------------------------------------------------------------
+# V2.3 Claim <-> Evidence Stance Reasoning & Deterministic Consensus Schemas
+# ---------------------------------------------------------------------------
+class EvidenceItemAssessment(BaseModel):
+    """Structured assessment of a single candidate evidence snippet relative to a claim."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    evidence_id: Union[str, int] = Field(..., description="Target evidence candidate identifier.")
+    claim_index: int = Field(..., ge=0, description="Sequential index of claim being evaluated.")
+    stance: EvidenceStance = Field(..., description="Assessed relationship category.")
+    context_sufficient: bool = Field(default=True, description="Whether excerpt text provides sufficient context.")
+    attribution_type: AttributionType = Field(
+        default=AttributionType.direct_report, description="Reporting relationship classification."
+    )
+    short_reason: str = Field(
+        ...,
+        min_length=1,
+        max_length=300,
+        description="Concise, non-empty, auditable justification (max 300 characters, no hidden reasoning).",
+    )
+
+
+class StanceReasoningBatchResponse(BaseModel):
+    """Batch structured output payload from Groq evaluating claim-evidence stances."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    assessments: list[EvidenceItemAssessment] = Field(
+        default_factory=list, description="Per-evidence stance assessments."
+    )
+
+
+class EvidenceConsensusResult(BaseModel):
+    """Deterministic consensus evaluation across evidence clusters for a single claim."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    claim_index: int = Field(..., ge=0, description="Index of evaluated claim.")
+    claim_text: str = Field(..., description="Checkable proposition text.")
+    consensus_stance: str = Field(
+        ..., description="Resulting stance: supports, contradicts, partial, conflicting, or unknown."
+    )
+    consensus_sufficient: bool = Field(..., description="Whether conservative corroboration threshold is satisfied.")
+    eligible_evidence_count: int = Field(default=0, ge=0, description="Count of eligible context evidence items.")
+    support_clusters: int = Field(default=0, ge=0, description="Count of independent supporting clusters.")
+    contradiction_clusters: int = Field(default=0, ge=0, description="Count of independent contradicting clusters.")
+    partial_clusters: int = Field(default=0, ge=0, description="Count of independent partial clusters.")
+    unique_domains: int = Field(default=0, ge=0, description="Count of distinct publisher domains among eligible items.")
+    cluster_count: int = Field(default=0, ge=0, description="Total independent evidence clusters detected.")
+    excluded_headline_only_count: int = Field(
+        default=0, ge=0, description="Headline-only items excluded from decisive consensus."
+    )
+    excluded_unclear_count: int = Field(
+        default=0, ge=0, description="Items excluded due to unclear, irrelevant, or quoted-claim status."
+    )
+    conflict_detected: bool = Field(default=False, description="Whether both supporting and contradicting clusters coexist.")
+    evidence_assessments: list[EvidenceItemAssessment] = Field(
+        default_factory=list, description="Associated per-evidence assessments."
+    )
+
+
+class DocumentEvidenceConsensus(BaseModel):
+    """Deterministic document-level evidence consensus aggregated across all claims."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    overall_stance: str = Field(
+        ..., description="Document-level stance: supports, contradicts, partial, conflicting, unknown."
+    )
+    overall_sufficient: bool = Field(..., description="Whether document evidence satisfies multi-claim consensus.")
+    claim_consensus: list[EvidenceConsensusResult] = Field(
+        default_factory=list, description="Per-claim consensus results."
+    )
+    total_eligible_clusters: int = Field(default=0, ge=0, description="Total independent clusters across all claims.")
+    total_unique_domains: int = Field(default=0, ge=0, description="Total unique publisher domains across all claims.")
+    conflict_detected: bool = Field(
+        default=False, description="Whether inter-claim or intra-claim contradiction conflict exists."
+    )
+    reason: str = Field(default="", max_length=1000, description="Summary rationale for consensus determination.")
 
 
 # ---------------------------------------------------------------------------
@@ -451,6 +570,9 @@ class ClaimResult(BaseModel):
     assessment: ClaimAssessment = Field(..., description="Verification status.")
     evidence: list[EvidenceItem] = Field(default_factory=list, max_length=20)
     explanation: Optional[str] = Field(default=None, max_length=1000)
+    consensus: Optional[EvidenceConsensusResult] = Field(
+        default=None, description="Deterministic consensus result for this claim."
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -472,6 +594,15 @@ class FusionSignals(BaseModel):
     red_flag_count: int = Field(default=0, ge=0)
     high_severity_red_flag_count: int = Field(default=0, ge=0)
     model_agreement: Optional[Union[bool, str]] = None
+    evidence_consensus_stance: Optional[str] = Field(
+        default=None, description="Stance derived from deterministic evidence consensus."
+    )
+    evidence_consensus_sufficient: Optional[bool] = Field(
+        default=None, description="Whether evidence consensus satisfied corroboration threshold."
+    )
+    eligible_clusters_count: Optional[int] = Field(
+        default=None, ge=0, description="Number of eligible independent evidence clusters."
+    )
 
 
 class FinalAssessment(BaseModel):
@@ -544,6 +675,9 @@ class PipelineTimings(BaseModel):
     ml_ms: float = Field(default=0.0, ge=0.0)
     red_flags_ms: float = Field(default=0.0, ge=0.0)
     retrieval_ms: float = Field(default=0.0, ge=0.0)
+    live_retrieval_ms: float = Field(default=0.0, ge=0.0)
+    stance_reasoning_ms: float = Field(default=0.0, ge=0.0)
+    consensus_ms: float = Field(default=0.0, ge=0.0)
     llm_ms: float = Field(default=0.0, ge=0.0)
     fusion_ms: float = Field(default=0.0, ge=0.0)
     total_ms: float = Field(default=0.0, ge=0.0)
@@ -569,6 +703,9 @@ class AnalysisResponse(BaseModel):
         default=None, description="Optional LLM assessment (supports graceful degradation)."
     )
     evidence: list[EvidenceItem] = Field(default_factory=list)
+    consensus: Optional[DocumentEvidenceConsensus] = Field(
+        default=None, description="Deterministic document-level evidence consensus."
+    )
     reason: str = Field(..., min_length=1)
     component_statuses: list[ComponentStatus] = Field(default_factory=list)
     timings: Optional[PipelineTimings] = None

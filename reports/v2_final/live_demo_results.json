@@ -1,0 +1,416 @@
+{
+  "timestamp": "2026-10-18 11:09:36 UTC",
+  "total_inputs": 4,
+  "llm_provider": "groq (openai/gpt-oss-20b)",
+  "evidence_discovery": "GDELT Context 2.0 + DOC 2.0",
+  "semantic_reranker": "sentence-transformers/all-MiniLM-L6-v2",
+  "results": [
+    {
+      "id": "live_demo_01",
+      "category": "factual_supported_news",
+      "input_text": "Solar energy generation and renewable electricity capacity expanded globally during 2024.",
+      "claims": [
+        {
+          "id": 0,
+          "text": "Solar energy generation expanded globally during 2024.",
+          "checkable": true,
+          "claim_type": "event",
+          "evidence_count": 0
+        },
+        {
+          "id": 1,
+          "text": "Renewable electricity capacity expanded globally during 2024.",
+          "checkable": true,
+          "claim_type": "event",
+          "evidence_count": 0
+        }
+      ],
+      "candidate_evidence_count": 0,
+      "candidate_evidence": [],
+      "evidence_consensus": null,
+      "classical_ml": {
+        "model_name": "Tuned TF-IDF + Logistic Regression",
+        "model_version": "validation_frozen",
+        "predicted_label": "likely_reliable",
+        "probabilities": {
+          "likely_fake": 0.28753621332977997,
+          "likely_reliable": 0.3600143721172827,
+          "misleading": 0.3524494145529372
+        }
+      },
+      "red_flags": {
+        "total_flags": 0,
+        "high_severity_flags": 0,
+        "medium_severity_flags": 0,
+        "low_severity_flags": 0
+      },
+      "final_verdict": "unverifiable",
+      "support_score": 0.0,
+      "abstained": true,
+      "fusion_reason": "No usable provenance-bearing evidence was available to verify or refute the claim; the system abstained from making an ungrounded factual determination.",
+      "component_statuses": [
+        {
+          "component": "cleaning",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "claim_extraction",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "classical_ml",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "red_flags",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "evidence_retrieval",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "live_evidence_retrieval",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "stance_reasoning",
+          "status": "skipped",
+          "message": "Skipped: No usable context evidence snippets available for stance reasoning."
+        },
+        {
+          "component": "evidence_consensus",
+          "status": "skipped",
+          "message": "Skipped: No usable external evidence."
+        },
+        {
+          "component": "llm_reasoner",
+          "status": "skipped",
+          "message": "Skipped because no usable external evidence was available."
+        },
+        {
+          "component": "fusion",
+          "status": "success",
+          "message": null
+        }
+      ],
+      "timings": {
+        "cleaning_ms": 0.004,
+        "claim_extraction_ms": 1275.134,
+        "ml_ms": 380.443,
+        "red_flags_ms": 0.229,
+        "retrieval_ms": 37253.348,
+        "live_retrieval_ms": 24044.583,
+        "stance_reasoning_ms": 0.014,
+        "consensus_ms": 0.007,
+        "fusion_ms": 0.12,
+        "total_ms": 38909.57
+      },
+      "status": "success"
+    },
+    {
+      "id": "live_demo_02",
+      "category": "fabricated_hoax_unsupported",
+      "input_text": "NASA astronomers confirmed a massive 5-mile asteroid will strike the Pacific Ocean next Tuesday.",
+      "claims": [],
+      "candidate_evidence_count": 0,
+      "candidate_evidence": [],
+      "evidence_consensus": null,
+      "classical_ml": {
+        "model_name": "Tuned TF-IDF + Logistic Regression",
+        "model_version": "validation_frozen",
+        "predicted_label": "likely_fake",
+        "probabilities": {
+          "likely_fake": 0.36228902652857187,
+          "likely_reliable": 0.3041209430568268,
+          "misleading": 0.3335900304146014
+        }
+      },
+      "red_flags": {
+        "total_flags": 0,
+        "high_severity_flags": 0,
+        "medium_severity_flags": 0,
+        "low_severity_flags": 0
+      },
+      "final_verdict": "unverifiable",
+      "support_score": 0.0,
+      "abstained": true,
+      "fusion_reason": "No checkable factual claims were identified; the statement consists of subjective opinion, speculative assertion, or non-verifiable content.",
+      "component_statuses": [
+        {
+          "component": "cleaning",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "claim_extraction",
+          "status": "failed",
+          "message": "Claim extraction failed; proceeding with unverified claim state."
+        },
+        {
+          "component": "classical_ml",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "red_flags",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "evidence_retrieval",
+          "status": "skipped",
+          "message": "Skipped: No checkable factual claims identified in input text."
+        },
+        {
+          "component": "live_evidence_retrieval",
+          "status": "skipped",
+          "message": "Skipped: No checkable factual claims identified in input text."
+        },
+        {
+          "component": "stance_reasoning",
+          "status": "skipped",
+          "message": "Skipped: No checkable factual claims to assess."
+        },
+        {
+          "component": "evidence_consensus",
+          "status": "skipped",
+          "message": "Skipped: No checkable factual claims."
+        },
+        {
+          "component": "llm_reasoner",
+          "status": "skipped",
+          "message": "Skipped: No checkable factual claims identified in input text."
+        },
+        {
+          "component": "fusion",
+          "status": "success",
+          "message": null
+        }
+      ],
+      "timings": {
+        "cleaning_ms": 0.02,
+        "claim_extraction_ms": 1199.39,
+        "ml_ms": 5.898,
+        "red_flags_ms": 0.454,
+        "retrieval_ms": 0.016,
+        "live_retrieval_ms": 0.0,
+        "stance_reasoning_ms": 0.011,
+        "consensus_ms": 0.007,
+        "fusion_ms": 0.249,
+        "total_ms": 1206.43
+      },
+      "status": "success"
+    },
+    {
+      "id": "live_demo_03",
+      "category": "scientific_space_discovery",
+      "input_text": "The James Webb Space Telescope observed atmospheric molecules in distant exoplanet systems.",
+      "claims": [
+        {
+          "id": 0,
+          "text": "The James Webb Space Telescope observed atmospheric molecules in distant exoplanet systems.",
+          "checkable": true,
+          "claim_type": "event",
+          "evidence_count": 0
+        }
+      ],
+      "candidate_evidence_count": 0,
+      "candidate_evidence": [],
+      "evidence_consensus": null,
+      "classical_ml": {
+        "model_name": "Tuned TF-IDF + Logistic Regression",
+        "model_version": "validation_frozen",
+        "predicted_label": "misleading",
+        "probabilities": {
+          "likely_fake": 0.3274316081001815,
+          "likely_reliable": 0.3205025157216864,
+          "misleading": 0.3520658761781321
+        }
+      },
+      "red_flags": {
+        "total_flags": 0,
+        "high_severity_flags": 0,
+        "medium_severity_flags": 0,
+        "low_severity_flags": 0
+      },
+      "final_verdict": "unverifiable",
+      "support_score": 0.0,
+      "abstained": true,
+      "fusion_reason": "No usable provenance-bearing evidence was available to verify or refute the claim; the system abstained from making an ungrounded factual determination.",
+      "component_statuses": [
+        {
+          "component": "cleaning",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "claim_extraction",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "classical_ml",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "red_flags",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "evidence_retrieval",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "live_evidence_retrieval",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "stance_reasoning",
+          "status": "skipped",
+          "message": "Skipped: No usable context evidence snippets available for stance reasoning."
+        },
+        {
+          "component": "evidence_consensus",
+          "status": "skipped",
+          "message": "Skipped: No usable external evidence."
+        },
+        {
+          "component": "llm_reasoner",
+          "status": "skipped",
+          "message": "Skipped because no usable external evidence was available."
+        },
+        {
+          "component": "fusion",
+          "status": "success",
+          "message": null
+        }
+      ],
+      "timings": {
+        "cleaning_ms": 0.017,
+        "claim_extraction_ms": 1096.23,
+        "ml_ms": 4.347,
+        "red_flags_ms": 0.202,
+        "retrieval_ms": 10222.708,
+        "live_retrieval_ms": 10201.366,
+        "stance_reasoning_ms": 0.006,
+        "consensus_ms": 0.002,
+        "fusion_ms": 0.041,
+        "total_ms": 11323.73
+      },
+      "status": "success"
+    },
+    {
+      "id": "live_demo_04",
+      "category": "subjective_opinion_non_checkable",
+      "input_text": "Renewable solar energy is aesthetically far more beautiful than coal-fired power stations.",
+      "claims": [
+        {
+          "id": 0,
+          "text": "Renewable solar energy is aesthetically far more beautiful than coal-fired power stations.",
+          "checkable": true,
+          "claim_type": "other",
+          "evidence_count": 0
+        }
+      ],
+      "candidate_evidence_count": 0,
+      "candidate_evidence": [],
+      "evidence_consensus": null,
+      "classical_ml": {
+        "model_name": "Tuned TF-IDF + Logistic Regression",
+        "model_version": "validation_frozen",
+        "predicted_label": "misleading",
+        "probabilities": {
+          "likely_fake": 0.2972005424335393,
+          "likely_reliable": 0.33582893657355295,
+          "misleading": 0.36697052099290767
+        }
+      },
+      "red_flags": {
+        "total_flags": 0,
+        "high_severity_flags": 0,
+        "medium_severity_flags": 0,
+        "low_severity_flags": 0
+      },
+      "final_verdict": "unverifiable",
+      "support_score": 0.0,
+      "abstained": true,
+      "fusion_reason": "No usable provenance-bearing evidence was available to verify or refute the claim; the system abstained from making an ungrounded factual determination.",
+      "component_statuses": [
+        {
+          "component": "cleaning",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "claim_extraction",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "classical_ml",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "red_flags",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "evidence_retrieval",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "live_evidence_retrieval",
+          "status": "success",
+          "message": null
+        },
+        {
+          "component": "stance_reasoning",
+          "status": "skipped",
+          "message": "Skipped: No usable context evidence snippets available for stance reasoning."
+        },
+        {
+          "component": "evidence_consensus",
+          "status": "skipped",
+          "message": "Skipped: No usable external evidence."
+        },
+        {
+          "component": "llm_reasoner",
+          "status": "skipped",
+          "message": "Skipped because no usable external evidence was available."
+        },
+        {
+          "component": "fusion",
+          "status": "success",
+          "message": null
+        }
+      ],
+      "timings": {
+        "cleaning_ms": 0.016,
+        "claim_extraction_ms": 1089.815,
+        "ml_ms": 2.867,
+        "red_flags_ms": 0.195,
+        "retrieval_ms": 10075.048,
+        "live_retrieval_ms": 10046.851,
+        "stance_reasoning_ms": 0.014,
+        "consensus_ms": 0.008,
+        "fusion_ms": 0.097,
+        "total_ms": 11168.36
+      },
+      "status": "success"
+    }
+  ]
+}

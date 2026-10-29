@@ -49,7 +49,7 @@ def check_connection(force_mock: bool = False) -> int:
         # Check whether a live provider is configured
         if not config.provider or not config.provider.strip():
             print("Live LLM provider is not configured. Adapter and tests are available in offline mode.")
-            print("To configure a provider, copy .env.example to .env and set LLM_PROVIDER and LLM_API_KEY.")
+            print("To configure a provider, copy .env.example to .env and set LLM_PROVIDER=groq and GROQ_API_KEY.")
             print("=" * 60)
             return 0
 
@@ -59,7 +59,7 @@ def check_connection(force_mock: bool = False) -> int:
             client = LLMClient(config=config)
         else:
             if not config.api_key or not config.api_key.strip():
-                print(f"Provider '{provider_name}' is set, but LLM_API_KEY is not configured.")
+                print(f"Provider '{provider_name}' is set, but GROQ_API_KEY is not configured.")
                 print("Live LLM provider is not configured. Adapter and tests are available in offline mode.")
                 print("=" * 60)
                 return 0

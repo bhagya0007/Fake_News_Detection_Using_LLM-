@@ -1,0 +1,83 @@
+{
+  "data/v2_raw/averitec/train.json": {
+    "relative_path": "data/v2_raw/averitec/train.json",
+    "dataset": "averitec",
+    "size_bytes": 10184813,
+    "sha256": "ae5eda7c42ddf1695ef185a7ba1bc716928f5adf57103e4f78aae5f9afe00f9c",
+    "source_url": "https://raw.githubusercontent.com/MichSchli/AVeriTeC/main/data/train.json",
+    "download_date": "2026-10-18T08:45:48.593377+00:00",
+    "license": "CC BY-NC 4.0"
+  },
+  "data/v2_raw/averitec/dev.json": {
+    "relative_path": "data/v2_raw/averitec/dev.json",
+    "dataset": "averitec",
+    "size_bytes": 1785475,
+    "sha256": "499793726b4a5406780928a3d9dedc48d6dd53de778f22437d129cacdb08e300",
+    "source_url": "https://raw.githubusercontent.com/MichSchli/AVeriTeC/main/data/dev.json",
+    "download_date": "2026-10-18T08:45:48.593377+00:00",
+    "license": "CC BY-NC 4.0"
+  },
+  "data/v2_raw/multifc/MultiFC_Codalab.zip": {
+    "relative_path": "data/v2_raw/multifc/MultiFC_Codalab.zip",
+    "dataset": "multifc",
+    "size_bytes": 33563576,
+    "sha256": "92aa1563ae21c14b9bb377b468976f774ae3287c94321f752fd785b28134cb4f",
+    "source_url": "https://copenlu.github.io/publication/2019_emnlp_augenstein/MultiFC_Codalab.zip",
+    "download_date": "2026-10-18T08:45:48.593377+00:00",
+    "license": "Unresolved / Unknown (see v2-dataset-audit.md)"
+  },
+  "data/v2_raw/multifc/train.tsv": {
+    "relative_path": "data/v2_raw/multifc/train.tsv",
+    "dataset": "multifc",
+    "size_bytes": 74597311,
+    "sha256": "b93767a352bc7f2433d9b9264bd7816ce84f2095682f714a77a65a445758b646",
+    "source_url": "https://copenlu.github.io/publication/2019_emnlp_augenstein/MultiFC_Codalab.zip#public_data.zip",
+    "download_date": "2026-10-18T08:45:48.593377+00:00",
+    "license": "Unresolved / Unknown"
+  },
+  "data/v2_raw/multifc/dev.tsv": {
+    "relative_path": "data/v2_raw/multifc/dev.tsv",
+    "dataset": "multifc",
+    "size_bytes": 9200658,
+    "sha256": "325e8f8a5c2fd1c34edc45d1d50b377cc9e7cc7fb16f7853d8b7bcc2ca346414",
+    "source_url": "https://copenlu.github.io/publication/2019_emnlp_augenstein/MultiFC_Codalab.zip#public_data.zip",
+    "download_date": "2026-10-18T08:45:48.593377+00:00",
+    "license": "Unresolved / Unknown"
+  },
+  "data/v2_raw/multifc/test.tsv": {
+    "relative_path": "data/v2_raw/multifc/test.tsv",
+    "dataset": "multifc",
+    "size_bytes": 9191446,
+    "sha256": "35e9b26faef381e0f0219077f546be3989f6f6bf699aa4f89c50c73b13b690f1",
+    "source_url": "https://copenlu.github.io/publication/2019_emnlp_augenstein/MultiFC_Codalab.zip#public_data.zip",
+    "download_date": "2026-10-18T08:45:48.593377+00:00",
+    "license": "Unresolved / Unknown"
+  },
+  "data/v2_raw/multifc/test.solution": {
+    "relative_path": "data/v2_raw/multifc/test.solution",
+    "dataset": "multifc",
+    "size_bytes": 35589,
+    "sha256": "8e171db49ca2f134d843cd83dbd739f4c568801fe76c7ddd1e3681bba96588b5",
+    "source_url": "https://copenlu.github.io/publication/2019_emnlp_augenstein/MultiFC_Codalab.zip#reference_multi_fc.zip",
+    "download_date": "2026-10-18T08:45:48.593377+00:00",
+    "license": "Unresolved / Unknown"
+  },
+  "data/v2_raw/multifc/labels.txt": {
+    "relative_path": "data/v2_raw/multifc/labels.txt",
+    "dataset": "multifc",
+    "size_bytes": 1762,
+    "sha256": "98df481bdb361b67ca07bcfd79c8a4ce5a0abd62ea5873e4dfaa570bb656c9eb",
+    "source_url": "https://copenlu.github.io/publication/2019_emnlp_augenstein/MultiFC_Codalab.zip#reference_multi_fc.zip",
+    "download_date": "2026-10-18T08:45:48.593377+00:00",
+    "license": "Unresolved / Unknown"
+  },
+  "data/v2_raw/fever/shared_task_dev.jsonl": {
+    "relative_path": "data/v2_raw/fever/shared_task_dev.jsonl",
+    "dataset": "fever",
+    "size_bytes": 4349935,
+    "sha256": "e89865bfe1b4dd054e03dd57d7241a6fde24862905f31117cf0cd719f7c78df7",
+    "source_url": "https://fever.ai/download/fever/shared_task_dev.jsonl",
+    "download_date": "2026-10-18T08:45:48.593377+00:00",
+    "license": "CC BY-SA 3.0 / Wikipedia Copyright"
+  }
+}

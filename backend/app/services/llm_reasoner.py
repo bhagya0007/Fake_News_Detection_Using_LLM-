@@ -21,19 +21,24 @@ from backend.app.ai.llm_client import LLMClient
 from backend.app.config import APP_DIR
 from backend.app.schemas import (
     MAX_ANALYSIS_TEXT_LENGTH,
+    AttributionType,
     Claim,
     EvidenceItem,
+    EvidenceItemAssessment,
+    EvidenceStance,
     EvidenceSupport,
     InternalConsistency,
     LLMAssessment,
     LLMCallMetadata,
     SourceAttribution,
+    StanceReasoningBatchResponse,
     VerdictLabel,
 )
 from backend.app.services.text_cleaner import clean_text
 
 PROMPTS_DIR: Path = APP_DIR / "ai" / "prompts"
 DEFAULT_PROMPT_VERSION: str = "reasoning_rubric_v1"
+DEFAULT_STANCE_PROMPT_VERSION: str = "stance_reasoning_v1"
 
 
 class LLMReasoner:
@@ -43,10 +48,13 @@ class LLMReasoner:
         self,
         llm_client: Optional[LLMClient] = None,
         prompt_version: str = DEFAULT_PROMPT_VERSION,
+        stance_prompt_version: str = DEFAULT_STANCE_PROMPT_VERSION,
     ) -> None:
         self.llm_client: LLMClient = llm_client if llm_client is not None else LLMClient()
         self.prompt_version: str = prompt_version
+        self.stance_prompt_version: str = stance_prompt_version
         self.system_prompt: str = self._load_system_prompt(prompt_version)
+        self.stance_system_prompt: str = self._load_system_prompt(stance_prompt_version)
         self.last_metadata: Optional[LLMCallMetadata] = None
 
     def _load_system_prompt(self, version: str) -> str:
@@ -204,3 +212,81 @@ class LLMReasoner:
             assessment = assessment.model_copy(update={"prompt_version": self.prompt_version})
 
         return assessment
+
+    def assess_evidence_stances(
+        self,
+        claims: list[Claim],
+        evidence_by_claim: Union[dict[int, list[EvidenceItem]], list[EvidenceItem]],
+        max_evidence_per_claim: int = 3,
+    ) -> list[EvidenceItemAssessment]:
+        """Assess the factual and semantic relationship between claims and evidence candidates.
+
+        Operates via ONE structured Groq reasoning call to minimize latency and token consumption.
+        Enforces prompt-injection defenses and strict evidence-only reasoning.
+
+        Args:
+            claims: List of checkable claims (at most 5 evaluated).
+            evidence_by_claim: Mapping of claim_index -> list[EvidenceItem], or flat list of items.
+            max_evidence_per_claim: Maximum evidence candidates evaluated per claim (default 3).
+
+        Returns:
+            List of EvidenceItemAssessment objects validated through Pydantic.
+        """
+        if not claims:
+            return []
+
+        # Normalize evidence input
+        items_to_assess: list[tuple[int, EvidenceItem]] = []
+        if isinstance(evidence_by_claim, dict):
+            for claim_idx, claim in enumerate(claims[:5]):
+                ev_list = evidence_by_claim.get(claim_idx, [])
+                for ev in ev_list[:max_evidence_per_claim]:
+                    items_to_assess.append((claim_idx, ev))
+        elif isinstance(evidence_by_claim, list):
+            for claim_idx, item in enumerate(evidence_by_claim[:5]):
+                if isinstance(item, list):
+                    for ev in item[:max_evidence_per_claim]:
+                        items_to_assess.append((claim_idx, ev))
+                else:
+                    items_to_assess.append((0, item))
+
+        if not items_to_assess:
+            return []
+
+        # Build structured user prompt
+        prompt_parts: list[str] = [
+            "Extracted Claims to Evaluate:",
+        ]
+        for idx, claim in enumerate(claims[:5]):
+            prompt_parts.append(f'Claim [{idx}]: "{claim.text}"')
+
+        prompt_parts.append("\nCandidate Evidence Items to Assess:")
+        for claim_idx, ev in items_to_assess:
+            ev_id = str(ev.id) if ev.id is not None else f"ev_{claim_idx}_{id(ev)}"
+            domain = ev.source_domain or ev.source_name or "Unknown Publisher"
+            quality = ev.evidence_quality or "context_snippet"
+            title = ev.title or "N/A"
+            snippet = ev.evidence_text or ev.title or ""
+            prompt_parts.append(
+                f"- Evidence ID: {ev_id}\n"
+                f"  Associated Claim Index: {claim_idx}\n"
+                f"  Publisher: {domain}\n"
+                f"  Title: {title}\n"
+                f"  Evidence Quality: {quality}\n"
+                f"  Snippet Excerpt:\n  \"{snippet}\"\n"
+            )
+
+        prompt_parts.extend([
+            "Instructions:",
+            "For each evidence candidate listed above, evaluate its exact factual relationship to its assigned claim.",
+            "Use ONLY the supplied snippet text; do not assume outside facts.",
+            "Return a structured JSON matching StanceReasoningBatchResponse with the 'assessments' array.",
+        ])
+
+        batch, metadata = self.llm_client.generate_structured_with_metadata(
+            system_prompt=self.stance_system_prompt,
+            user_prompt="\n".join(prompt_parts),
+            response_model=StanceReasoningBatchResponse,
+        )
+        self.last_metadata = metadata
+        return batch.assessments

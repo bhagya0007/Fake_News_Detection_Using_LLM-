@@ -12,6 +12,7 @@ python-dotenv==1.2.3
 
 # LLM Providers & SDKs
 google-genai==2.25.0
+groq==1.7.0
 
 # Testing
 pytest==9.1.1

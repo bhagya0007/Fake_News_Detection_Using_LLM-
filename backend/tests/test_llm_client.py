@@ -68,10 +68,10 @@ def test_missing_api_key_handled_clearly_when_real_provider_requires_it() -> Non
         get_provider(config)
     assert "Missing API key for provider 'openai'" in str(exc_info.value)
 
-    config_gemini = LLMConfig(provider="gemini", api_key=None)
+    config_groq = LLMConfig(provider="groq", api_key=None)
     with pytest.raises(LLMConfigurationError) as exc_info:
-        get_provider(config_gemini)
-    assert "Missing API key for provider 'gemini'" in str(exc_info.value)
+        get_provider(config_groq)
+    assert "Missing API key for provider 'groq'" in str(exc_info.value)
 
 
 # ---------------------------------------------------------------------------

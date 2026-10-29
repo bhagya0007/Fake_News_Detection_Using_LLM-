@@ -1,0 +1,144 @@
+{
+  "manifest_version": "v2_processed_manifest_v1",
+  "mapping_version": "v2_label_mapping_v1",
+  "creation_timestamp": "2026-10-18T09:00:46.222405+00:00",
+  "script": "scripts/prepare_v2_datasets.py",
+  "raw_counts": {
+    "liar": 12836,
+    "averitec": 3568,
+    "multifc": 34842,
+    "fever": 19998,
+    "total_raw": 71244
+  },
+  "canonical_eligible_train_pool": {
+    "file": "data/v2_processed/combined_eligible_train_pool.jsonl",
+    "total_samples": 12192,
+    "class_distribution": {
+      "likely_fake": 4275,
+      "misleading": 3589,
+      "likely_reliable": 4062,
+      "unverifiable": 266
+    },
+    "class_percentages": {
+      "likely_fake": 35.06,
+      "misleading": 29.44,
+      "likely_reliable": 33.32,
+      "unverifiable": 2.18
+    },
+    "contributing_datasets": {
+      "liar_train": 9240,
+      "averitec_train": 2952
+    },
+    "preserved_independent_splits": {
+      "liar_validation": 1284,
+      "liar_test_protected": 1283,
+      "averitec_dev_protected": 500
+    },
+    "excluded_datasets": {
+      "multifc": "Research Candidate - licensing unresolved; excluded from canonical pool",
+      "fever": "Auxiliary stance pretraining only; excluded from real-world news pool"
+    },
+    "exclusions_prevented": {
+      "test_contamination_exclusions": 1028,
+      "exact_duplicate_exclusions": 116
+    }
+  },
+  "v2_5_validation_policy": {
+    "strategy": "Stratified 5-Fold Cross-Validation on Canonical Training Pool",
+    "stratification_key": "source_dataset + harmonized_label",
+    "folds": [
+      {
+        "fold": 1,
+        "total_val_samples": 2439,
+        "liar_samples": 1848,
+        "liar_percentage": 75.77,
+        "averitec_samples": 591,
+        "averitec_percentage": 24.23,
+        "class_distribution": {
+          "likely_reliable": 813,
+          "misleading": 718,
+          "likely_fake": 855,
+          "unverifiable": 53
+        }
+      },
+      {
+        "fold": 2,
+        "total_val_samples": 2439,
+        "liar_samples": 1848,
+        "liar_percentage": 75.77,
+        "averitec_samples": 591,
+        "averitec_percentage": 24.23,
+        "class_distribution": {
+          "likely_reliable": 812,
+          "misleading": 717,
+          "likely_fake": 856,
+          "unverifiable": 54
+        }
+      },
+      {
+        "fold": 3,
+        "total_val_samples": 2438,
+        "liar_samples": 1848,
+        "liar_percentage": 75.8,
+        "averitec_samples": 590,
+        "averitec_percentage": 24.2,
+        "class_distribution": {
+          "likely_reliable": 812,
+          "misleading": 718,
+          "likely_fake": 855,
+          "unverifiable": 53
+        }
+      },
+      {
+        "fold": 4,
+        "total_val_samples": 2438,
+        "liar_samples": 1848,
+        "liar_percentage": 75.8,
+        "averitec_samples": 590,
+        "averitec_percentage": 24.2,
+        "class_distribution": {
+          "likely_reliable": 812,
+          "misleading": 718,
+          "likely_fake": 855,
+          "unverifiable": 53
+        }
+      },
+      {
+        "fold": 5,
+        "total_val_samples": 2438,
+        "liar_samples": 1848,
+        "liar_percentage": 75.8,
+        "averitec_samples": 590,
+        "averitec_percentage": 24.2,
+        "class_distribution": {
+          "likely_reliable": 813,
+          "misleading": 718,
+          "likely_fake": 854,
+          "unverifiable": 53
+        }
+      }
+    ]
+  },
+  "protected_test_splits": {
+    "liar_test": 1283,
+    "averitec_dev": 500,
+    "multifc_test": 3487,
+    "fever_dev": 19998
+  },
+  "deduplication_and_leakage_stats": {
+    "protected_test_hashes_count": 24733,
+    "intra_dataset_leakage": {
+      "liar_train_vs_eval": 5,
+      "averitec_train_vs_eval": 8,
+      "multifc_train_vs_eval": 39
+    },
+    "cross_dataset_overlap": {
+      "liar_vs_averitec": 0,
+      "liar_vs_multifc": 12325,
+      "liar_vs_fever": 0,
+      "averitec_vs_multifc": 4,
+      "averitec_vs_fever": 0,
+      "multifc_vs_fever": 0
+    }
+  }
+}

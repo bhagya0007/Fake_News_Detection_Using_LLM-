@@ -1,0 +1,72 @@
+{
+  "timestamp": "2026-10-18 16:44:38",
+  "total_tests": 9,
+  "passed_tests": 9,
+  "failed_tests": 0,
+  "resilience_pass_rate": 1.0,
+  "test_cases": [
+    {
+      "test_name": "Groq HTTP 429 Quota Exhaustion",
+      "passed": true,
+      "observed_verdict": "unverifiable",
+      "observed_abstained": true,
+      "expected_behavior": "System gracefully degrades to unverifiable abstention without crashing"
+    },
+    {
+      "test_name": "Groq Request Timeout",
+      "passed": true,
+      "observed_verdict": "unverifiable",
+      "observed_abstained": true,
+      "expected_behavior": "System gracefully degrades to unverifiable abstention without crashing"
+    },
+    {
+      "test_name": "GDELT Retrieval Empty / Timeout",
+      "passed": true,
+      "observed_verdict": "unverifiable",
+      "observed_abstained": true,
+      "expected_behavior": "System safely abstains with unverifiable under Rule 2 (No usable real evidence)"
+    },
+    {
+      "test_name": "Non-Checkable Subjective Opinion Input",
+      "passed": true,
+      "observed_verdict": "unverifiable",
+      "observed_abstained": true,
+      "expected_behavior": "Rule 1 triggers: unverifiable abstention for non-checkable claims"
+    },
+    {
+      "test_name": "Conflicting Evidence Sources",
+      "passed": true,
+      "observed_verdict": "unverifiable",
+      "observed_abstained": true,
+      "expected_behavior": "Consensus detects conflict, Rule 2B safely abstains"
+    },
+    {
+      "test_name": "Single Evidence Cluster Abstention",
+      "passed": true,
+      "observed_verdict": "unverifiable",
+      "observed_abstained": true,
+      "expected_behavior": "Consensus flags insufficient corroboration, fusion safely abstains"
+    },
+    {
+      "test_name": "Headline-Only Evidence Gating",
+      "passed": true,
+      "observed_verdict": "unverifiable",
+      "observed_abstained": true,
+      "expected_behavior": "Headline-only evidence is excluded from decisive consensus, triggering safe abstention"
+    },
+    {
+      "test_name": "Synthetic Evidence Production Quarantine",
+      "passed": true,
+      "observed_verdict": "unverifiable",
+      "observed_abstained": true,
+      "expected_behavior": "Production quarantine rejects synthetic demo items, triggering safe abstention"
+    },
+    {
+      "test_name": "Factual Evidence Overrides Classical ML & Red Flags",
+      "passed": true,
+      "observed_verdict": "likely_reliable",
+      "observed_abstained": false,
+      "expected_behavior": "Evidence gate governs; classical ML and red flags are overridden by factual corroboration"
+    }
+  ]
+}

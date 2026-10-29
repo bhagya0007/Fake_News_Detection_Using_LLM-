@@ -1,0 +1,394 @@
+[
+  {
+    "id": "liar_13270.json",
+    "dataset": "LIAR Test",
+    "claim": "We know that more than half of Hillary Clintons meetings while she was secretary of state were given to major contributors to the Clinton Foundation.",
+    "ground_truth": "misleading",
+    "raw_benchmark_label": "barely-true",
+    "model_prediction": "likely_reliable",
+    "predicted_probabilities": {
+      "likely_reliable": 0.581,
+      "misleading": 0.302,
+      "likely_fake": 0.116
+    },
+    "error_category": "False Positive (High Risk: Misleading/Fake predicted as Reliable)"
+  },
+  {
+    "id": "liar_6649.json",
+    "dataset": "LIAR Test",
+    "claim": "We know there are more Democrats in Georgia than Republicans. We know that for a fact.",
+    "ground_truth": "misleading",
+    "raw_benchmark_label": "barely-true",
+    "model_prediction": "likely_reliable",
+    "predicted_probabilities": {
+      "likely_reliable": 0.505,
+      "misleading": 0.349,
+      "likely_fake": 0.146
+    },
+    "error_category": "False Positive (High Risk: Misleading/Fake predicted as Reliable)"
+  },
+  {
+    "id": "liar_11200.json",
+    "dataset": "LIAR Test",
+    "claim": "Says 57 percent of federal spending goes to the military and just 1 percent goes to food and agriculture, including food stamps.",
+    "ground_truth": "likely_fake",
+    "raw_benchmark_label": "false",
+    "model_prediction": "likely_reliable",
+    "predicted_probabilities": {
+      "likely_reliable": 0.502,
+      "misleading": 0.382,
+      "likely_fake": 0.117
+    },
+    "error_category": "False Positive (High Risk: Misleading/Fake predicted as Reliable)"
+  },
+  {
+    "id": "liar_8047.json",
+    "dataset": "LIAR Test",
+    "claim": "On residency requirements for public workers",
+    "ground_truth": "misleading",
+    "raw_benchmark_label": "half-true",
+    "model_prediction": "likely_reliable",
+    "predicted_probabilities": {
+      "likely_reliable": 0.559,
+      "misleading": 0.199,
+      "likely_fake": 0.242
+    },
+    "error_category": "False Positive (High Risk: Misleading/Fake predicted as Reliable)"
+  },
+  {
+    "id": "liar_1328.json",
+    "dataset": "LIAR Test",
+    "claim": "\"Ronald Reagan faced an even worse recession\" than the current one.",
+    "ground_truth": "likely_fake",
+    "raw_benchmark_label": "false",
+    "model_prediction": "likely_reliable",
+    "predicted_probabilities": {
+      "likely_reliable": 0.52,
+      "misleading": 0.297,
+      "likely_fake": 0.182
+    },
+    "error_category": "False Positive (High Risk: Misleading/Fake predicted as Reliable)"
+  },
+  {
+    "id": "liar_5244.json",
+    "dataset": "LIAR Test",
+    "claim": "Says Mitt Romney was one of the first national Republican leaders to endorse Marco Rubio.",
+    "ground_truth": "misleading",
+    "raw_benchmark_label": "half-true",
+    "model_prediction": "likely_reliable",
+    "predicted_probabilities": {
+      "likely_reliable": 0.471,
+      "misleading": 0.346,
+      "likely_fake": 0.183
+    },
+    "error_category": "False Positive (High Risk: Misleading/Fake predicted as Reliable)"
+  },
+  {
+    "id": "liar_12996.json",
+    "dataset": "LIAR Test",
+    "claim": "The number of illegal immigrants could be 3 million. It could be 30 million.",
+    "ground_truth": "likely_fake",
+    "raw_benchmark_label": "pants-fire",
+    "model_prediction": "likely_reliable",
+    "predicted_probabilities": {
+      "likely_reliable": 0.528,
+      "misleading": 0.271,
+      "likely_fake": 0.201
+    },
+    "error_category": "False Positive (High Risk: Misleading/Fake predicted as Reliable)"
+  },
+  {
+    "id": "liar_13251.json",
+    "dataset": "LIAR Test",
+    "claim": "Says he won the second debate with Hillary Clinton in a landslide in every poll.",
+    "ground_truth": "likely_fake",
+    "raw_benchmark_label": "pants-fire",
+    "model_prediction": "likely_reliable",
+    "predicted_probabilities": {
+      "likely_reliable": 0.408,
+      "misleading": 0.376,
+      "likely_fake": 0.215
+    },
+    "error_category": "False Positive (High Risk: Misleading/Fake predicted as Reliable)"
+  },
+  {
+    "id": "liar_11972.json",
+    "dataset": "LIAR Test",
+    "claim": "Building a wall on the U.S.-Mexico border will take literally years.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.139,
+      "misleading": 0.325,
+      "likely_fake": 0.536
+    },
+    "error_category": "False Negative (Over-skeptical: Reliable claim predicted as Fake)"
+  },
+  {
+    "id": "liar_12169.json",
+    "dataset": "LIAR Test",
+    "claim": "There have not been any public safety issues in cities that allow transgender people to use the bathroom of the gender they identify as.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "mostly-true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.357,
+      "misleading": 0.26,
+      "likely_fake": 0.383
+    },
+    "error_category": "False Negative (Over-skeptical: Reliable claim predicted as Fake)"
+  },
+  {
+    "id": "liar_8162.json",
+    "dataset": "LIAR Test",
+    "claim": "Marijuana is less toxic than alcohol.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "mostly-true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.345,
+      "misleading": 0.238,
+      "likely_fake": 0.417
+    },
+    "error_category": "False Negative (Over-skeptical: Reliable claim predicted as Fake)"
+  },
+  {
+    "id": "liar_10055.json",
+    "dataset": "LIAR Test",
+    "claim": "In Massachusetts, Scott Brown pushed for a law to force women considering abortion -- force them -- to look at color photographs of developing fetuses.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "mostly-true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.108,
+      "misleading": 0.424,
+      "likely_fake": 0.468
+    },
+    "error_category": "False Negative (Over-skeptical: Reliable claim predicted as Fake)"
+  },
+  {
+    "id": "liar_4929.json",
+    "dataset": "LIAR Test",
+    "claim": "In 1993, Newt Gingrich first advocated for the individual mandate in health care. And as recently as May of this year, he was still advocating for it.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "mostly-true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.272,
+      "misleading": 0.203,
+      "likely_fake": 0.525
+    },
+    "error_category": "False Negative (Over-skeptical: Reliable claim predicted as Fake)"
+  },
+  {
+    "id": "liar_7562.json",
+    "dataset": "LIAR Test",
+    "claim": "Already, a prototype driverless car has traveled more than 300,000 miles in the crowded maze of California streets without a single accident.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "mostly-true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.352,
+      "misleading": 0.26,
+      "likely_fake": 0.388
+    },
+    "error_category": "False Negative (Over-skeptical: Reliable claim predicted as Fake)"
+  },
+  {
+    "id": "liar_934.json",
+    "dataset": "LIAR Test",
+    "claim": "Putting three Republicans in my Cabinet...is unprecedented.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.228,
+      "misleading": 0.277,
+      "likely_fake": 0.494
+    },
+    "error_category": "False Negative (Over-skeptical: Reliable claim predicted as Fake)"
+  },
+  {
+    "id": "liar_8941.json",
+    "dataset": "LIAR Test",
+    "claim": "The words subhuman mongrel, which Ted Nugent called President Barack Obama, were used by the Nazis to justify the genocide of the Jewish community.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.052,
+      "misleading": 0.095,
+      "likely_fake": 0.853
+    },
+    "error_category": "False Negative (Over-skeptical: Reliable claim predicted as Fake)"
+  },
+  {
+    "id": "liar_11685.json",
+    "dataset": "LIAR Test",
+    "claim": "Wisconsin is on pace to double the number of layoffs this year.",
+    "ground_truth": "likely_fake",
+    "raw_benchmark_label": "false",
+    "model_prediction": "misleading",
+    "predicted_probabilities": {
+      "likely_reliable": 0.27,
+      "misleading": 0.545,
+      "likely_fake": 0.185
+    },
+    "error_category": "Nuance/Boundary Error (Distinction between Misleading and Fake/Reliable)"
+  },
+  {
+    "id": "liar_9524.json",
+    "dataset": "LIAR Test",
+    "claim": "When asked by a reporter whether hes at the center of a criminal scheme to violate campaign laws, Gov. Scott Walker nodded yes.",
+    "ground_truth": "likely_fake",
+    "raw_benchmark_label": "pants-fire",
+    "model_prediction": "misleading",
+    "predicted_probabilities": {
+      "likely_reliable": 0.298,
+      "misleading": 0.404,
+      "likely_fake": 0.298
+    },
+    "error_category": "Nuance/Boundary Error (Distinction between Misleading and Fake/Reliable)"
+  },
+  {
+    "id": "liar_5962.json",
+    "dataset": "LIAR Test",
+    "claim": "Over the past five years the federal government has paid out $601 million in retirement and disability benefits to deceased former federal employees.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "true",
+    "model_prediction": "misleading",
+    "predicted_probabilities": {
+      "likely_reliable": 0.337,
+      "misleading": 0.362,
+      "likely_fake": 0.301
+    },
+    "error_category": "Nuance/Boundary Error (Distinction between Misleading and Fake/Reliable)"
+  },
+  {
+    "id": "liar_13231.json",
+    "dataset": "LIAR Test",
+    "claim": "I was gone when there was a red line against Syria.",
+    "ground_truth": "misleading",
+    "raw_benchmark_label": "barely-true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.254,
+      "misleading": 0.355,
+      "likely_fake": 0.391
+    },
+    "error_category": "Nuance/Boundary Error (Distinction between Misleading and Fake/Reliable)"
+  },
+  {
+    "id": "liar_1051.json",
+    "dataset": "LIAR Test",
+    "claim": "Contends that President Obama literally said (if) his cap-and-trade proposals were to pass, that utility rates, his words now, would, necessarily skyrocket.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "true",
+    "model_prediction": "misleading",
+    "predicted_probabilities": {
+      "likely_reliable": 0.198,
+      "misleading": 0.553,
+      "likely_fake": 0.249
+    },
+    "error_category": "Nuance/Boundary Error (Distinction between Misleading and Fake/Reliable)"
+  },
+  {
+    "id": "liar_816.json",
+    "dataset": "LIAR Test",
+    "claim": "On which team hes rooting for in the World Series.",
+    "ground_truth": "misleading",
+    "raw_benchmark_label": "half-true",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.178,
+      "misleading": 0.227,
+      "likely_fake": 0.595
+    },
+    "error_category": "Nuance/Boundary Error (Distinction between Misleading and Fake/Reliable)"
+  },
+  {
+    "id": "liar_12381.json",
+    "dataset": "LIAR Test",
+    "claim": "The United States has a low voter turnout rate.",
+    "ground_truth": "likely_reliable",
+    "raw_benchmark_label": "true",
+    "model_prediction": "misleading",
+    "predicted_probabilities": {
+      "likely_reliable": 0.394,
+      "misleading": 0.404,
+      "likely_fake": 0.202
+    },
+    "error_category": "Nuance/Boundary Error (Distinction between Misleading and Fake/Reliable)"
+  },
+  {
+    "id": "averitec_dev_9",
+    "dataset": "AVeriTeC Dev (Epistemic)",
+    "claim": "You see the number today? 33.1 GDP. The biggest in the history of our country by almost triple, right? Almost triple. Now it\u2019s very much bigger than any GDP we\u2019ve ever had. You have to go back to the 1950s, and then it\u2019s less than half. This is the greatest number, 33.1 percent.",
+    "ground_truth": "unverifiable (Not Enough Evidence)",
+    "raw_benchmark_label": "Not Enough Evidence",
+    "model_prediction": "likely_reliable",
+    "predicted_probabilities": {
+      "likely_reliable": 0.663,
+      "misleading": 0.161,
+      "likely_fake": 0.177
+    },
+    "error_category": "Epistemic Blindspot (Unverifiable claim forced into 3-class space)"
+  },
+  {
+    "id": "averitec_dev_15",
+    "dataset": "AVeriTeC Dev (Epistemic)",
+    "claim": "Illegal drug, border crossings, and human smuggling activities have decreased in areas where barriers are deployed in the United States.",
+    "ground_truth": "unverifiable (Not Enough Evidence)",
+    "raw_benchmark_label": "Not Enough Evidence",
+    "model_prediction": "misleading",
+    "predicted_probabilities": {
+      "likely_reliable": 0.305,
+      "misleading": 0.516,
+      "likely_fake": 0.179
+    },
+    "error_category": "Epistemic Blindspot (Unverifiable claim forced into 3-class space)"
+  },
+  {
+    "id": "averitec_dev_26",
+    "dataset": "AVeriTeC Dev (Epistemic)",
+    "claim": "Ivermectin is a treatment for coronavirus.",
+    "ground_truth": "unverifiable (Not Enough Evidence)",
+    "raw_benchmark_label": "Not Enough Evidence",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.056,
+      "misleading": 0.048,
+      "likely_fake": 0.896
+    },
+    "error_category": "Epistemic Blindspot (Unverifiable claim forced into 3-class space)"
+  },
+  {
+    "id": "averitec_dev_59",
+    "dataset": "AVeriTeC Dev (Epistemic)",
+    "claim": "There is a scam involving Santander customers being sent fake bank cards.",
+    "ground_truth": "unverifiable (Not Enough Evidence)",
+    "raw_benchmark_label": "Not Enough Evidence",
+    "model_prediction": "likely_fake",
+    "predicted_probabilities": {
+      "likely_reliable": 0.182,
+      "misleading": 0.058,
+      "likely_fake": 0.76
+    },
+    "error_category": "Epistemic Blindspot (Unverifiable claim forced into 3-class space)"
+  },
+  {
+    "id": "averitec_dev_68",
+    "dataset": "AVeriTeC Dev (Epistemic)",
+    "claim": "Joe Biden said 'If Your 8-Year-Old Child Says They Want To Be Transgender, They Have A Right To Transition'.",
+    "ground_truth": "unverifiable (Not Enough Evidence)",
+    "raw_benchmark_label": "Not Enough Evidence",
+    "model_prediction": "misleading",
+    "predicted_probabilities": {
+      "likely_reliable": 0.194,
+      "misleading": 0.439,
+      "likely_fake": 0.367
+    },
+    "error_category": "Epistemic Blindspot (Unverifiable claim forced into 3-class space)"
+  }
+]

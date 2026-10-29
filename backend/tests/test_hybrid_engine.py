@@ -70,6 +70,7 @@ def block_network_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
         raise RuntimeError("Prohibited real network call during test execution!")
 
     monkeypatch.setattr(socket, "socket", disabled_socket)
+    monkeypatch.setenv("LLM_PROVIDER", "mock")
 
 
 # ---------------------------------------------------------------------------

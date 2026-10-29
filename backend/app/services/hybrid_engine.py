@@ -30,7 +30,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Union
 
-from backend.app.config import DATA_DIR, MODELS_DIR
+from backend.app.config import DATA_DIR, MODELS_DIR, LIVE_EVIDENCE_ENABLED
 from backend.app.schemas import (
     MAX_ANALYSIS_TEXT_LENGTH,
     AnalysisResponse,
@@ -40,7 +40,9 @@ from backend.app.schemas import (
     ClaimResult,
     ComponentExecutionStatus,
     ComponentStatus,
+    DocumentEvidenceConsensus,
     EvidenceItem,
+    EvidenceItemAssessment,
     EvidenceRetrievalResult,
     FinalAssessment,
     LLMAssessment,
@@ -53,8 +55,10 @@ from backend.app.schemas import (
 )
 from backend.app.services.baseline_model import load_baseline_pipeline, predict_baseline
 from backend.app.services.claim_extractor import ClaimExtractor
+from backend.app.services.evidence_consensus import EvidenceConsensusEngine
 from backend.app.services.evidence_retriever import EvidenceRetriever
 from backend.app.services.fusion import fuse
+from backend.app.services.live_evidence_retriever import LiveEvidenceRetriever
 from backend.app.services.llm_reasoner import LLMReasoner
 from backend.app.services.red_flags import analyze_red_flags
 from backend.app.services.text_cleaner import clean_text
@@ -103,8 +107,10 @@ class HybridAnalysisEngine:
         ml_service: Optional[Any] = None,
         red_flag_service: Optional[Any] = None,
         evidence_retriever: Optional[Any] = None,
+        live_evidence_retriever: Optional[Any] = None,
         llm_reasoner: Optional[Any] = None,
         fusion_engine: Optional[Any] = None,
+        evidence_consensus_engine: Optional[Any] = None,
         allow_synthetic_evidence: bool = False,
         top_k: int = 3,
     ) -> None:
@@ -115,8 +121,10 @@ class HybridAnalysisEngine:
             ml_service: Optional custom ClassicalMLService or fake.
             red_flag_service: Optional custom RedFlagService or fake.
             evidence_retriever: Optional custom EvidenceRetriever or fake.
+            live_evidence_retriever: Optional custom LiveEvidenceRetriever or fake.
             llm_reasoner: Optional custom LLMReasoner or fake.
             fusion_engine: Optional custom fusion engine or callable.
+            evidence_consensus_engine: Optional custom EvidenceConsensusEngine or fake.
             allow_synthetic_evidence: Quarantine override toggle (defaults to False for production).
             top_k: Number of evidence candidates to retrieve per checkable claim.
         """
@@ -125,8 +133,12 @@ class HybridAnalysisEngine:
         self.red_flag_service = red_flag_service if red_flag_service is not None else DefaultRedFlagService()
 
         self._evidence_retriever = evidence_retriever
+        self._live_evidence_retriever = live_evidence_retriever
         self.llm_reasoner = llm_reasoner if llm_reasoner is not None else LLMReasoner()
         self.fusion_engine = fusion_engine
+        self.evidence_consensus_engine = (
+            evidence_consensus_engine if evidence_consensus_engine is not None else EvidenceConsensusEngine()
+        )
         self.allow_synthetic_evidence = allow_synthetic_evidence
         self.top_k = top_k
 
@@ -148,6 +160,17 @@ class HybridAnalysisEngine:
     def evidence_retriever(self, val: Any) -> None:
         self._evidence_retriever = val
 
+    @property
+    def live_evidence_retriever(self) -> Any:
+        """Lazily initialize persistent LiveEvidenceRetriever upon first access."""
+        if self._live_evidence_retriever is None and LIVE_EVIDENCE_ENABLED:
+            self._live_evidence_retriever = LiveEvidenceRetriever(top_k=self.top_k)
+        return self._live_evidence_retriever
+
+    @live_evidence_retriever.setter
+    def live_evidence_retriever(self, val: Any) -> None:
+        self._live_evidence_retriever = val
+
     @classmethod
     def demo(
         cls,
@@ -155,6 +178,7 @@ class HybridAnalysisEngine:
         ml_service: Optional[Any] = None,
         red_flag_service: Optional[Any] = None,
         evidence_retriever: Optional[Any] = None,
+        live_evidence_retriever: Optional[Any] = None,
         llm_reasoner: Optional[Any] = None,
         fusion_engine: Optional[Any] = None,
         top_k: int = 3,
@@ -165,6 +189,7 @@ class HybridAnalysisEngine:
             ml_service=ml_service,
             red_flag_service=red_flag_service,
             evidence_retriever=evidence_retriever,
+            live_evidence_retriever=live_evidence_retriever,
             llm_reasoner=llm_reasoner,
             fusion_engine=fusion_engine,
             allow_synthetic_evidence=True,
@@ -315,16 +340,24 @@ class HybridAnalysisEngine:
 
         red_flags_ms = round((time.perf_counter() - t0) * 1000, 3)
 
-        # 6. Evidence Retrieval per Checkable Claim
+        # 6. Evidence Retrieval per Checkable Claim (Local KB + Live GDELT)
         t0 = time.perf_counter()
         claim_results: list[ClaimResult] = []
         deduped_evidence: list[EvidenceItem] = []
         evidence_retrieval_result: Optional[EvidenceRetrievalResult] = None
+        live_retrieval_ms: float = 0.0
 
         if not has_checkable_claims:
             component_statuses.append(
                 ComponentStatus(
                     component="evidence_retrieval",
+                    status=ComponentExecutionStatus.skipped,
+                    message="Skipped: No checkable factual claims identified in input text.",
+                )
+            )
+            component_statuses.append(
+                ComponentStatus(
+                    component="live_evidence_retrieval",
                     status=ComponentExecutionStatus.skipped,
                     message="Skipped: No checkable factual claims identified in input text.",
                 )
@@ -338,12 +371,16 @@ class HybridAnalysisEngine:
                     )
                 )
         else:
+            # 6A. Local Evidence Retrieval
+            seen_keys: set[Union[str, int, tuple[str, str]]] = set()
+            backend_name = "unknown"
+            threshold = 0.45
             try:
-                seen_keys: set[Union[str, int, tuple[str, str]]] = set()
                 backend_name = getattr(self.evidence_retriever, "backend_name", "unknown")
                 threshold = getattr(self.evidence_retriever, "threshold", 0.45)
 
                 for c in claims:
+                    items: list[EvidenceItem] = []
                     if c.checkable:
                         if hasattr(self.evidence_retriever, "retrieve"):
                             ret_res = self.evidence_retriever.retrieve(c.text, top_k=self.top_k)
@@ -352,35 +389,21 @@ class HybridAnalysisEngine:
                         else:
                             raise TypeError("evidence_retriever has no retrieve method and is not callable")
 
-                        items = ret_res.items if isinstance(ret_res, EvidenceRetrievalResult) else (ret_res or [])
-                        claim_results.append(
-                            ClaimResult(
-                                claim=c,
-                                assessment=ClaimAssessment.not_checked,
-                                evidence=items,
-                            )
-                        )
+                        items = list(ret_res.items) if isinstance(ret_res, EvidenceRetrievalResult) else list(ret_res or [])
                         for item in items:
                             key = item.id if item.id is not None else (item.source_name, item.evidence_text)
                             if key not in seen_keys:
                                 seen_keys.add(key)
                                 deduped_evidence.append(item)
-                    else:
-                        claim_results.append(
-                            ClaimResult(
-                                claim=c,
-                                assessment=ClaimAssessment.not_checked,
-                                evidence=[],
-                            )
-                        )
 
-                evidence_retrieval_result = EvidenceRetrievalResult(
-                    query=cleaned_text[:100],
-                    items=deduped_evidence,
-                    retrieval_backend=backend_name,
-                    threshold=threshold,
-                    no_sufficient_evidence=len(deduped_evidence) == 0,
-                )
+                    claim_results.append(
+                        ClaimResult(
+                            claim=c,
+                            assessment=ClaimAssessment.not_checked,
+                            evidence=items,
+                        )
+                    )
+
                 component_statuses.append(
                     ComponentStatus(component="evidence_retrieval", status=ComponentExecutionStatus.success)
                 )
@@ -398,7 +421,59 @@ class HybridAnalysisEngine:
                     for c in claims
                 ]
                 deduped_evidence = []
-                evidence_retrieval_result = None
+
+            # 6B. Live Evidence Retrieval (GDELT Context + DOC Fallback)
+            t_live = time.perf_counter()
+            live_status = ComponentExecutionStatus.skipped
+            live_msg: Optional[str] = None
+            if self.live_evidence_retriever is not None and getattr(self.live_evidence_retriever, "enabled", True):
+                try:
+                    any_unavailable = False
+                    unavailable_err: Optional[str] = None
+                    live_found_count = 0
+                    for cr in claim_results:
+                        if cr.claim.checkable:
+                            live_items, meta = self.live_evidence_retriever.retrieve_for_claim(cr.claim)
+                            if isinstance(meta, dict) and meta.get("status") == "unavailable":
+                                any_unavailable = True
+                                unavailable_err = meta.get("error")
+                            for live_item in live_items:
+                                live_found_count += 1
+                                cr.evidence.append(live_item)
+                                key = live_item.source_url if live_item.source_url else (live_item.source_domain, live_item.title)
+                                if key not in seen_keys:
+                                    seen_keys.add(key)
+                                    deduped_evidence.append(live_item)
+
+                    if any_unavailable and live_found_count == 0:
+                        live_status = ComponentExecutionStatus.unavailable
+                        live_msg = f"Live evidence discovery unavailable: {unavailable_err}" if unavailable_err else "Live evidence discovery unavailable."
+                    else:
+                        live_status = ComponentExecutionStatus.success
+                except Exception as exc:
+                    logger.warning("Live evidence retrieval failed: %s", exc)
+                    live_status = ComponentExecutionStatus.unavailable
+                    live_msg = f"Live evidence discovery unavailable: {exc}"
+            else:
+                live_msg = "Live evidence discovery is disabled."
+
+            component_statuses.append(
+                ComponentStatus(
+                    component="live_evidence_retrieval",
+                    status=live_status,
+                    message=live_msg,
+                )
+            )
+            live_retrieval_ms = round((time.perf_counter() - t_live) * 1000, 3)
+
+            evidence_retrieval_result = EvidenceRetrievalResult(
+                query=cleaned_text[:100],
+                items=deduped_evidence,
+                retrieval_backend=backend_name,
+                threshold=threshold,
+                no_sufficient_evidence=len(deduped_evidence) == 0,
+                unique_source_domains=len({it.source_domain for it in deduped_evidence if it.source_domain}),
+            )
 
         retrieval_ms = round((time.perf_counter() - t0) * 1000, 3)
 
@@ -408,6 +483,114 @@ class HybridAnalysisEngine:
             if (not item.is_synthetic) or self.allow_synthetic_evidence
         ]
         has_usable_evidence = len(usable_evidence) > 0
+
+        # 6C. Groq Evidence Stance Assessment (V2.3)
+        t_stance = time.perf_counter()
+        stance_status = ComponentExecutionStatus.skipped
+        stance_msg: Optional[str] = None
+        assessments: list[EvidenceItemAssessment] = []
+
+        context_evidence_exists = any(
+            item.evidence_quality != "headline_only" for item in usable_evidence
+        )
+
+        if not has_checkable_claims:
+            stance_msg = "Skipped: No checkable factual claims to assess."
+        elif not has_usable_evidence or not context_evidence_exists:
+            stance_msg = "Skipped: No usable context evidence snippets available for stance reasoning."
+        else:
+            try:
+                if hasattr(self.llm_reasoner, "assess_evidence_stances"):
+                    evidence_by_claim = {
+                        idx: cr.evidence for idx, cr in enumerate(claim_results)
+                    }
+                    assessments = self.llm_reasoner.assess_evidence_stances(
+                        claims=claims,
+                        evidence_by_claim=evidence_by_claim,
+                        max_evidence_per_claim=3,
+                    )
+                    stance_status = ComponentExecutionStatus.success
+                else:
+                    stance_msg = "llm_reasoner has no assess_evidence_stances method; proceeding."
+                    stance_status = ComponentExecutionStatus.skipped
+            except Exception as exc:
+                logger.warning("Groq evidence stance reasoning failed: %s", exc)
+                err_str = str(exc).lower()
+                if "429" in err_str or "quota" in err_str or "resource_exhausted" in err_str:
+                    stance_status = ComponentExecutionStatus.unavailable
+                    stance_msg = "LLM unavailable: quota exhausted or rate limited"
+                elif "timeout" in err_str or "timed out" in err_str:
+                    stance_status = ComponentExecutionStatus.unavailable
+                    stance_msg = "LLM unavailable: request timed out"
+                else:
+                    stance_status = ComponentExecutionStatus.failed
+                    stance_msg = f"Evidence stance assessment failed: {exc}"
+                assessments = []
+
+        component_statuses.append(
+            ComponentStatus(
+                component="stance_reasoning",
+                status=stance_status,
+                message=stance_msg,
+            )
+        )
+        stance_reasoning_ms = round((time.perf_counter() - t_stance) * 1000, 3)
+
+        # 6D. Deterministic Evidence Consensus & Near-Duplicate Clustering (V2.3)
+        t_consensus = time.perf_counter()
+        consensus_status = ComponentExecutionStatus.skipped
+        document_consensus: Optional[DocumentEvidenceConsensus] = None
+
+        if has_checkable_claims and has_usable_evidence and self.evidence_consensus_engine is not None and assessments:
+            try:
+                evidence_by_claim_list = [cr.evidence for cr in claim_results]
+                document_consensus = self.evidence_consensus_engine.evaluate_document_consensus(
+                    claims=claims,
+                    evidence_by_claim=evidence_by_claim_list,
+                    assessments=assessments,
+                )
+                consensus_status = ComponentExecutionStatus.success
+
+                # Update per-claim consensus in claim_results
+                for idx, cr in enumerate(claim_results):
+                    if idx < len(document_consensus.claim_consensus):
+                        cr.consensus = document_consensus.claim_consensus[idx]
+
+                # Update item fields on deduped_evidence
+                ass_map = {a.evidence_id: a for a in assessments}
+                for item in deduped_evidence:
+                    if item.id in ass_map:
+                        a = ass_map[item.id]
+                        item.stance = a.stance
+                        item.attribution_type = a.attribution_type
+                        item.stance_reason = a.short_reason
+                        item.context_sufficient = a.context_sufficient
+            except Exception as exc:
+                logger.warning("Deterministic evidence consensus failed: %s", exc)
+                consensus_status = ComponentExecutionStatus.failed
+                document_consensus = None
+
+        consensus_msg = None
+        if consensus_status == ComponentExecutionStatus.skipped:
+            if not has_checkable_claims:
+                consensus_msg = "Skipped: No checkable factual claims."
+            elif not has_usable_evidence:
+                consensus_msg = "Skipped: No usable external evidence."
+            elif not assessments:
+                consensus_msg = "Skipped: No stance assessments available to evaluate consensus."
+            else:
+                consensus_msg = "Skipped: Consensus engine not configured."
+        elif consensus_status == ComponentExecutionStatus.failed:
+            consensus_msg = "Consensus evaluation encountered an error."
+
+        component_statuses.append(
+            ComponentStatus(
+                component="evidence_consensus",
+                status=consensus_status,
+                message=consensus_msg,
+            )
+        )
+        consensus_ms = round((time.perf_counter() - t_consensus) * 1000, 3)
 
         # 7. LLM Evidence-Bound Reasoner (Quota-Aware Evidence Gate)
         t0 = time.perf_counter()
@@ -480,23 +663,45 @@ class HybridAnalysisEngine:
         try:
             if self.fusion_engine is not None:
                 if hasattr(self.fusion_engine, "fuse"):
-                    final_assessment = self.fusion_engine.fuse(
-                        ml=ml_assessment,
-                        red_flags=red_flags_result,
-                        llm=llm_assessment,
-                        evidence=evidence_retrieval_result,
-                        has_checkable_claims=has_checkable_claims,
-                        allow_synthetic_evidence=self.allow_synthetic_evidence,
-                    )
+                    try:
+                        final_assessment = self.fusion_engine.fuse(
+                            ml=ml_assessment,
+                            red_flags=red_flags_result,
+                            llm=llm_assessment,
+                            evidence=evidence_retrieval_result,
+                            has_checkable_claims=has_checkable_claims,
+                            allow_synthetic_evidence=self.allow_synthetic_evidence,
+                            evidence_consensus=document_consensus,
+                        )
+                    except TypeError:
+                        final_assessment = self.fusion_engine.fuse(
+                            ml=ml_assessment,
+                            red_flags=red_flags_result,
+                            llm=llm_assessment,
+                            evidence=evidence_retrieval_result,
+                            has_checkable_claims=has_checkable_claims,
+                            allow_synthetic_evidence=self.allow_synthetic_evidence,
+                        )
                 elif callable(self.fusion_engine):
-                    final_assessment = self.fusion_engine(
-                        ml=ml_assessment,
-                        red_flags=red_flags_result,
-                        llm=llm_assessment,
-                        evidence=evidence_retrieval_result,
-                        has_checkable_claims=has_checkable_claims,
-                        allow_synthetic_evidence=self.allow_synthetic_evidence,
-                    )
+                    try:
+                        final_assessment = self.fusion_engine(
+                            ml=ml_assessment,
+                            red_flags=red_flags_result,
+                            llm=llm_assessment,
+                            evidence=evidence_retrieval_result,
+                            has_checkable_claims=has_checkable_claims,
+                            allow_synthetic_evidence=self.allow_synthetic_evidence,
+                            evidence_consensus=document_consensus,
+                        )
+                    except TypeError:
+                        final_assessment = self.fusion_engine(
+                            ml=ml_assessment,
+                            red_flags=red_flags_result,
+                            llm=llm_assessment,
+                            evidence=evidence_retrieval_result,
+                            has_checkable_claims=has_checkable_claims,
+                            allow_synthetic_evidence=self.allow_synthetic_evidence,
+                        )
                 else:
                     raise TypeError("fusion_engine is not callable")
             else:
@@ -507,6 +712,7 @@ class HybridAnalysisEngine:
                     evidence=evidence_retrieval_result,
                     has_checkable_claims=has_checkable_claims,
                     allow_synthetic_evidence=self.allow_synthetic_evidence,
+                    evidence_consensus=document_consensus,
                 )
 
             component_statuses.append(
@@ -552,6 +758,9 @@ class HybridAnalysisEngine:
             ml_ms=ml_ms,
             red_flags_ms=red_flags_ms,
             retrieval_ms=retrieval_ms,
+            live_retrieval_ms=live_retrieval_ms,
+            stance_reasoning_ms=stance_reasoning_ms,
+            consensus_ms=consensus_ms,
             llm_ms=llm_ms,
             fusion_ms=fusion_ms,
             total_ms=total_ms,
@@ -567,8 +776,13 @@ class HybridAnalysisEngine:
             ml=ml_assessment,
             llm=llm_assessment,
             evidence=deduped_evidence,
+            consensus=document_consensus,
             reason=final_assessment.reason,
             component_statuses=component_statuses,
             timings=timings,
             created_at=datetime.now(timezone.utc),
         )
+
+    # Alias for convenience
+    analyze = analyze_text
+
