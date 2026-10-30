@@ -95,7 +95,7 @@ class GroqProvider(BaseLLMProvider):
         timeout_seconds: float = 30.0,
         temperature: float = 0.0,
         client: Optional[Any] = None,
-        max_completion_tokens: int = 1024,
+        max_completion_tokens: int = 2048,
     ) -> None:
         if not api_key or not str(api_key).strip():
             raise LLMConfigurationError(
@@ -112,7 +112,7 @@ class GroqProvider(BaseLLMProvider):
         self._model_name = resolved_model
         self._timeout_seconds = float(timeout_seconds)
         self._temperature = float(temperature)
-        self._max_completion_tokens = int(max_completion_tokens) if max_completion_tokens is not None else 1024
+        self._max_completion_tokens = int(max_completion_tokens) if max_completion_tokens is not None else 2048
 
         # Allow client injection for testing with zero network calls
         if client is not None:

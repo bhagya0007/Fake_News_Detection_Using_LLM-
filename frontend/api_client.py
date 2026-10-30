@@ -14,7 +14,7 @@ import httpx
 # Shared constant matching backend validation bounds
 MAX_ANALYSIS_TEXT_LENGTH: int = 20_000
 DEFAULT_API_BASE_URL: str = "http://127.0.0.1:8000"
-DEFAULT_TIMEOUT_SECONDS: float = 90.0
+DEFAULT_TIMEOUT_SECONDS: float = 180.0
 
 
 class APIClientError(Exception):
